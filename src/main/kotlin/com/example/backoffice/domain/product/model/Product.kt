@@ -19,6 +19,13 @@ class Product(
     @Column(name = "category", nullable = false)
     var category: Category,
 
+    @Column(name = "stock")
+    var stock: Int,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    var status: Status,
+
     @Column(name = "discount_rate")
     var discountRate: Int,
 
