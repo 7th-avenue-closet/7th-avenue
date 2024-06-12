@@ -5,7 +5,7 @@ data class CreateProductRequestDto (
     val price: Long,
     val description: String,
     val category: String,
-    val stock: Int?,
+    val stock: Int,
     val discountRate: Int?,
     val imageUrl: String?
 )
