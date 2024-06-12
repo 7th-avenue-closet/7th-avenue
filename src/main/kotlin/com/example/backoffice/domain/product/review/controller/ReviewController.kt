@@ -1,5 +1,7 @@
 package com.example.backoffice.domain.product.review.controller
 
+import com.example.backoffice.domain.product.review.dto.CreateReviewRequest
+import com.example.backoffice.domain.product.review.service.ReviewService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,10 +16,11 @@ class ReviewController(
 ) {
     fun createReview(
         @PathVariable productId: Long,
-        @RequestBody createReviewRequest: CreateReviewReuqest
-    ): ResponseEntity<ReviewResposne> {
+        @RequestBody createReviewRequest: CreateReviewRequest
+    ): ResponseEntity<Unit> {
+        reviewService.createReview(productId, createReviewRequest)
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(reviewService.createReview(productId, createReviewRequest))
+            .build()
     }
 }
