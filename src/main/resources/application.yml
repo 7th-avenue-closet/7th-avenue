@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    #    hibernate:
+    #      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        orm:
+          jdbc:
+            bind: trace
+      springframework:
+        security: debug
+
+jwt:
+  secret: 3601b3ec80fe72be62c3f9ac7e3b8e4ac8aa4dde29a69a7cb1bf973baaad4d21
