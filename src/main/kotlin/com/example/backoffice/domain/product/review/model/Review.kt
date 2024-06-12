@@ -4,6 +4,7 @@ import com.example.backoffice.domain.product.model.Product
 import com.example.backoffice.domain.user.model.User
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "review")
@@ -16,10 +17,10 @@ class Review(
     var rating: Rating,
 
     @Column(name = "created_at")
-    val createdAt: LocalDateTime,
+    val createdAt: ZonedDateTime,
 
     @Column(name = "updated_at")
-    var updatedAt: LocalDateTime,
+    var updatedAt: ZonedDateTime,
 
     @Column(name = "is_deleted")
     var isDeleted: Boolean = false,
