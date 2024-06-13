@@ -20,4 +20,22 @@ class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    companion object {
+        private fun checkAccountId(newAccountId: String) {
+            if (newAccountId.matches("^[a-z0-9]{4,10}$".toRegex()) == false) {
+                throw IllegalArgumentException("Invalid account ID.")
+            }
+        }
+
+        fun of(
+            accountId: String,
+            name: String,
+            password: String,
+            imageUrl: String?,
+        ): User {
+            checkAccountId(accountId)
+            return User(name, accountId, password, imageUrl)
+        }
+    }
 }
