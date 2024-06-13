@@ -14,4 +14,10 @@ class Admin(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    companion object {
+        fun of(accountId: String, password: String): Admin {
+            return Admin(accountId = accountId, password = password)
+        }
+    }
 }
