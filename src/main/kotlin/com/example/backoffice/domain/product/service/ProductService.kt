@@ -1,9 +1,6 @@
 package com.example.backoffice.domain.product.service
 
-import com.example.backoffice.domain.product.dto.CreateProductRequestDto
-import com.example.backoffice.domain.product.dto.ProductDetailResponseDto
-import com.example.backoffice.domain.product.dto.ProductResponseDto
-import com.example.backoffice.domain.product.dto.UpdateProductRequestDto
+import com.example.backoffice.domain.product.dto.*
 import com.example.backoffice.domain.product.model.*
 import com.example.backoffice.domain.product.repository.ProductRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -28,20 +25,13 @@ class ProductService (
     @Transactional
     fun createProduct(request: CreateProductRequestDto): ProductResponseDto {
 
-
         return productRepository.save(
             Product(
                 name = request.name,
                 price = request.price,
                 description = request.description,
-                category = when (request.category) {
-                    Category.ACC.name -> Category.ACC
-                    Category.TOP.name -> Category.TOP
-                    Category.OUTER.name -> Category.OUTER
-                    Category.BOTTOM.name -> Category.BOTTOM
-                    else -> throw IllegalArgumentException("Unknown category")
-                },
-                status = status(request.stock, request.discountRate),
+                category = Category.fromString(request.category),
+                status = Status.calc(request.stock, request.discountRate),
                 stock = request.stock,
                 discountRate = request.discountRate,
                 imageUrl = request.imageUrl,
@@ -51,18 +41,16 @@ class ProductService (
         ).toResponse()
     }
 
-    fun updateProduct(productId: Long, request: UpdateProductRequestDto) : ProductResponseDto {
-        TODO()
+    fun updateProduct(productId: Long, request: UpdateProductRequestDto) : IdResponseDto {
+        val product = productRepository.findByIdOrNull(productId) ?: throw RuntimeException("Product with ID $productId not found")
+        product.update(request)
+        return product.toIdResponse()
     }
 
     fun deleteProduct(productId: Long) {
-        TODO()
-    }
-
-    fun status(stock: Int, discountRate: Int?) : Status {
-        return if(stock < 1)  Status.SOLD_OUT
-        else if(discountRate!!>0) Status.ON_SALE
-        else Status.ON_DISCOUNT
+        val product = productRepository.findByIdOrNull(productId) ?: throw RuntimeException("Product with ID $productId not found")
+        product.delete()
+        productRepository.save(product)
     }
 
 }

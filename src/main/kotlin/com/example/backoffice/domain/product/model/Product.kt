@@ -1,10 +1,10 @@
 package com.example.backoffice.domain.product.model
 
-import com.example.backoffice.domain.product.dto.CreateProductRequestDto
+import com.example.backoffice.domain.product.dto.IdResponseDto
 import com.example.backoffice.domain.product.dto.ProductDetailResponseDto
 import com.example.backoffice.domain.product.dto.ProductResponseDto
+import com.example.backoffice.domain.product.dto.UpdateProductRequestDto
 import jakarta.persistence.*
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -24,7 +24,7 @@ class Product(
     var category: Category,
 
     @Column(name = "stock")
-    var stock: Int,
+    var stock: Int?,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -49,21 +49,21 @@ class Product(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    fun status(stock: Int, discountRate: Int?) : Status {
-        return if(stock < 1)  Status.SOLD_OUT
-         else if(discountRate!!>0) Status.ON_SALE
-         else Status.ON_DISCOUNT
+
+    fun update(request: UpdateProductRequestDto){
+        name = request.name
+        price = request.price
+        description = request.description
+        category =Category.fromString(request.category)
+        stock = request.stock
+        status = Status.calc(stock, discountRate)
+        imageUrl = request.imageUrl
+        updatedAt = ZonedDateTime.now()
     }
 
-//    fun category(category: String) : Category {
-//        return when (category) {
-//            Category.ACC.name -> Category.ACC
-//            Category.TOP.name -> Category.TOP
-//            Category.OUTER.name -> Category.OUTER
-//            Category.BOTTOM.name -> Category.BOTTOM
-//            else -> throw IllegalArgumentException("Unknown category")
-//        }
-//    }
+    fun delete() {
+        isDeleted = true
+    }
 }
 
 fun Product.toResponse() : ProductResponseDto{
@@ -95,5 +95,11 @@ fun Product.toDetailResponse() : ProductDetailResponseDto{
         imageUrl = imageUrl,
         createdAt = createdAt,
         updatedAt = updatedAt,
+    )
+}
+
+fun Product.toIdResponse() : IdResponseDto {
+    return IdResponseDto(
+        id = id!!
     )
 }
