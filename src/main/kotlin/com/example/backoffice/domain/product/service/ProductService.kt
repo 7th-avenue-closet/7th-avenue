@@ -3,21 +3,23 @@ package com.example.backoffice.domain.product.service
 import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.product.dto.*
 import com.example.backoffice.domain.product.model.*
+import com.example.backoffice.domain.product.model.Category.valueOf
 import com.example.backoffice.domain.product.repository.ProductRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.io.InvalidObjectException
 
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
 ) {
     fun getProducts(): List<ProductResponseDto> {
-        return productRepository.findAll().map { it.toResponse() }
+        return productRepository.findAllByIsDeletedFalse().map { it.toResponse() }
     }
 
     fun getProductById(productId: Long): ProductDetailResponseDto {
-        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
+        val product = productRepository.findByIdAndIsDeletedFalse(productId)
         return product.toDetailResponse()
     }
 

@@ -40,7 +40,7 @@ class Product(
     var updatedAt: ZonedDateTime,
 
     @Column(name = "is_deleted")
-    var isDeleted: Boolean = false
+    var isDeleted: Boolean = false,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
