@@ -14,22 +14,16 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ReviewService(
-    val reviewRepository: ReviewRepository,
-    val productRepository: ProductRepository,
-    val userRepository: UserRepository
+    val reviewRepository: ReviewRepository, val productRepository: ProductRepository, val userRepository: UserRepository
 ) {
     @Transactional
     fun createReview(userId: Long, productId: Long, request: ReviewRequest) {
         val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         val (comment, rating) = request
-        val reviewer = userRepository.findByIdOrNull(userId)
-            ?: throw ModelNotFoundException("User", userId)
+        val reviewer = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
         val review = Review.of(
-            comment = comment,
-            rating = Rating.fromString(rating),
-            user = reviewer,
-            product = product
+            comment = comment, rating = Rating.fromString(rating), user = reviewer, product = product
         )
         reviewRepository.save(review)
     }
@@ -39,14 +33,12 @@ class ReviewService(
         productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review", reviewId)
 
-        if (review.user.id != userId )
-            throw UnauthorizedException("You do not have permission to modify.")
+        if (review.user.id != userId) throw UnauthorizedException("You do not have permission to modify.")
 
         val (comment, rating) = request
 
         review.updateReview(
-            comment = comment,
-            rating = rating
+            comment = comment, rating = rating
         )
     }
 }
