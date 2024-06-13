@@ -33,7 +33,7 @@ class Review(
     companion object {
         private fun checkCommentLength(newComment: String) {
             if (newComment.isEmpty() || newComment.length > 200) {
-                throw InvalidObjectException("리뷰의 내용은 1자 이상 200자 이하로 작성해주세요!")
+                throw InvalidObjectException("Please write your review with a minimum of 1 character and a maximum of 200 characters.")
             }
         }
 
@@ -55,7 +55,12 @@ class Review(
     fun updateReview(
         comment: String, rating: String
     ) {
+        checkCommentLength(comment)
         this.comment = comment
         this.rating = Rating.fromString(rating)
+    }
+
+    fun softDelete() {
+        isDeleted = true
     }
 }

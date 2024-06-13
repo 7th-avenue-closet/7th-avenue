@@ -6,12 +6,7 @@ import com.example.backoffice.infra.security.MemberPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/products/{productId}/reviews")
 @RestController
@@ -37,5 +32,17 @@ class ReviewController(
     ): ResponseEntity<Unit> {
         reviewService.updateReview(principal.id, productId, reviewId, reviewRequest)
         return ResponseEntity.status(HttpStatus.OK).build()
+    }
+
+    @DeleteMapping("/{reviewId}")
+    fun deleteReview(
+        @AuthenticationPrincipal principal: MemberPrincipal,
+        @PathVariable productId: Long,
+        @PathVariable reviewId: Long
+    ): ResponseEntity<Unit> {
+        reviewService.deleteReview(principal.id, productId, reviewId)
+        return ResponseEntity
+            .status(HttpStatus.NO_CONTENT)
+            .build()
     }
 }
