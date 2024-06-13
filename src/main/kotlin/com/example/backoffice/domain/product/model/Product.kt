@@ -126,8 +126,3 @@ fun Product.toDetailResponse(): ProductDetailResponseDto {
     )
 }
 
-fun Product.toIdResponse(): IdResponseDto {
-    return IdResponseDto(
-        id = id!!
-    )
-}
