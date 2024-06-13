@@ -36,10 +36,18 @@ class ProductService(
     }
 
     @Transactional
-    fun updateProduct(productId: Long, request: UpdateProductRequestDto): Long {
+    fun updateProduct(productId: Long, request: UpdateProductRequestDto): IdResponseDto {
         val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
-        product.update(request)
-        return product.id!!
+        product.update(
+            name = request.name,
+            price = request.price,
+            description = request.description,
+            category = request.category,
+            stock = request.stock,
+            discountRate = request.discountRate,
+            imageUrl = request.imageUrl
+        )
+        return product.toIdResponse()
     }
 
     @Transactional

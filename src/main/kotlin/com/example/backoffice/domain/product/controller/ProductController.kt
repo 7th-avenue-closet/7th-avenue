@@ -31,7 +31,7 @@ class ProductController(
     fun updateProduct(
         @PathVariable("productId") productId: Long,
         @RequestBody request: UpdateProductRequestDto
-    ): ResponseEntity<Long> {
+    ): ResponseEntity<IdResponseDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.updateProduct(productId, request))
     }
 

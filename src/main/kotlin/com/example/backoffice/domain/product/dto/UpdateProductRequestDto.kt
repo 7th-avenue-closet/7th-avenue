@@ -9,4 +9,5 @@ data class UpdateProductRequestDto(
     val discountRate: Int,
     val imageUrl: String?
 ) {
+
 }

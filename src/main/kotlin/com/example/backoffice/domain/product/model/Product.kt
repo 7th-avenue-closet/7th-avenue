@@ -1,9 +1,5 @@
 package com.example.backoffice.domain.product.model
 
-import com.example.backoffice.domain.product.dto.IdResponseDto
-import com.example.backoffice.domain.product.dto.ProductDetailResponseDto
-import com.example.backoffice.domain.product.dto.ProductResponseDto
-import com.example.backoffice.domain.product.dto.UpdateProductRequestDto
 import jakarta.persistence.*
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -51,15 +47,23 @@ class Product(
     var id: Long? = null
 
 
-    fun update(request: UpdateProductRequestDto) {
-        name = request.name
-        price = request.price
-        description = request.description
-        category = Category.fromString(request.category)
-        stock = request.stock
-        status = Status.calc(stock, discountRate)
-        imageUrl = request.imageUrl
-        updatedAt = ZonedDateTime.now()
+    fun update(
+        name: String,
+        price: Long,
+        description: String,
+        category: String,
+        stock: Int,
+        discountRate: Int,
+        imageUrl: String?
+    ) {
+        this.name = name
+        this.price = price
+        this.description = description
+        this.category = Category.fromString(category)
+        this.stock = stock
+        this.status = Status.calc(stock, discountRate)
+        this.imageUrl = imageUrl
+        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
     }
 
     fun delete() {
@@ -94,35 +98,4 @@ class Product(
     }
 }
 
-fun Product.toResponse(): ProductResponseDto {
-    return ProductResponseDto(
-        id = id!!,
-        name = name,
-        price = price,
-        description = description,
-        category = category.name,
-        stock = stock,
-        status = status.name,
-        discountRate = discountRate,
-        imageUrl = imageUrl,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-    )
-}
-
-fun Product.toDetailResponse(): ProductDetailResponseDto {
-    return ProductDetailResponseDto(
-        id = id!!,
-        name = name,
-        price = price,
-        description = description,
-        category = category,
-        stock = stock,
-        status = status,
-        discountRate = discountRate,
-        imageUrl = imageUrl,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-    )
-}
 
