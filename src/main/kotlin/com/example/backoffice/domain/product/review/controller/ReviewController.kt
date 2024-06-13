@@ -2,7 +2,7 @@ package com.example.backoffice.domain.product.review.controller
 
 import com.example.backoffice.domain.product.review.dto.CreateReviewRequest
 import com.example.backoffice.domain.product.review.service.ReviewService
-import com.example.backoffice.domain.user.model.User
+import com.example.backoffice.infra.security.MemberPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -19,11 +19,12 @@ class ReviewController(
 ) {
     @PostMapping
     fun createReview(
-        @AuthenticationPrincipal user: User,
+        @AuthenticationPrincipal
+        principal: MemberPrincipal,
         @PathVariable productId: Long,
         @RequestBody createReviewRequest: CreateReviewRequest
     ): ResponseEntity<Unit> {
-        reviewService.createReview(user, productId, createReviewRequest)
+        reviewService.createReview(principal.id, productId, createReviewRequest)
         return ResponseEntity
             .status(HttpStatus.OK)
             .build()

@@ -8,6 +8,7 @@ import com.example.backoffice.domain.product.review.model.Review
 import com.example.backoffice.domain.product.review.repository.ReviewRepository
 import com.example.backoffice.domain.user.model.User
 import com.example.backoffice.domain.user.repository.UserRepository
+import com.example.backoffice.infra.security.MemberPrincipal
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,12 +20,11 @@ class ReviewService(
     val userRepository: UserRepository
 ) {
     @Transactional
-    fun createReview(user: User, productId: Long, request: CreateReviewRequest) {
+    fun createReview(userId: Long, productId: Long, request: CreateReviewRequest) {
         val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         val (comment, rating) = request
-        val userId = user.id
         val reviewer = userRepository.findByIdOrNull(userId)
-            ?: throw ModelNotFoundException("User", userId!!)
+            ?: throw ModelNotFoundException("User", userId)
 
         val review = Review.of(
             comment = comment,
