@@ -39,7 +39,12 @@ class User(
             imageUrl: String?,
         ): User {
             checkAccountId(accountId)
-            return User(name, accountId, password, imageUrl)
+            return User(
+                accountId = accountId,
+                name = name,
+                password = password,
+                imageUrl = imageUrl
+            )
         }
     }
 }
