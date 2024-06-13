@@ -11,48 +11,43 @@ import java.time.ZonedDateTime
 
 
 @Service
-class ProductService (
+class ProductService(
     private val productRepository: ProductRepository,
 ) {
     fun getProducts(): List<ProductResponseDto> {
-        return productRepository.findAll().map { it.toResponse()}
+        return productRepository.findAll().map { it.toResponse() }
     }
 
     fun getProductById(productId: Long): ProductDetailResponseDto {
-        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException ("Product", productId)
+        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         return product.toDetailResponse()
     }
 
     @Transactional
-    fun createProduct(request: CreateProductRequestDto): IdResponseDto {
-        return productRepository.save(
-            Product(
-                name = request.name,
-                price = request.price,
-                description = request.description,
-                category = Category.fromString(request.category),
-                status = Status.calc(request.stock, request.discountRate),
-                stock = request.stock,
-                discountRate = request.discountRate,
-                imageUrl = request.imageUrl,
-                createdAt = ZonedDateTime.now(),
-                updatedAt = ZonedDateTime.now()
-            )
-        ).toIdResponse()
+    fun createProduct(request: CreateProductRequestDto) {
+        val product = Product.of(
+            name = request.name,
+            price = request.price,
+            description = request.description,
+            category = request.category,
+            stock = request.stock,
+            discountRate = request.discountRate,
+            imageUrl = request.imageUrl
+        )
+        productRepository.save(product)
     }
 
     @Transactional
-    fun updateProduct(productId: Long, request: UpdateProductRequestDto) : IdResponseDto {
-        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException ("Product", productId)
+    fun updateProduct(productId: Long, request: UpdateProductRequestDto): Long {
+        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         product.update(request)
-        return product.toIdResponse()
+        return product.id!!
     }
 
     @Transactional
     fun deleteProduct(productId: Long) {
-        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException ("Product", productId)
+        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         product.delete()
-        productRepository.save(product)
     }
 
 }

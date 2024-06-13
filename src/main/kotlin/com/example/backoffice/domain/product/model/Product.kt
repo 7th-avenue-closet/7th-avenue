@@ -5,6 +5,7 @@ import com.example.backoffice.domain.product.dto.ProductDetailResponseDto
 import com.example.backoffice.domain.product.dto.ProductResponseDto
 import com.example.backoffice.domain.product.dto.UpdateProductRequestDto
 import jakarta.persistence.*
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Entity
@@ -23,15 +24,15 @@ class Product(
     @Column(name = "category", nullable = false)
     var category: Category,
 
-    @Column(name = "stock")
-    var stock: Int?,
+    @Column(name = "stock", nullable = false)
+    var stock: Int,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     var status: Status,
 
-    @Column(name = "discount_rate")
-    var discountRate: Int?,
+    @Column(name = "discount_rate", nullable = false)
+    var discountRate: Int,
 
     @Column(name = "image_url")
     var imageUrl: String?,
@@ -50,11 +51,11 @@ class Product(
     var id: Long? = null
 
 
-    fun update(request: UpdateProductRequestDto){
+    fun update(request: UpdateProductRequestDto) {
         name = request.name
         price = request.price
         description = request.description
-        category =Category.fromString(request.category)
+        category = Category.fromString(request.category)
         stock = request.stock
         status = Status.calc(stock, discountRate)
         imageUrl = request.imageUrl
@@ -64,17 +65,44 @@ class Product(
     fun delete() {
         isDeleted = true
     }
+
+    companion object {
+        fun of(
+            name: String,
+            price: Long,
+            description: String,
+            category: String,
+            stock: Int,
+            discountRate: Int,
+            imageUrl: String?
+        ): Product {
+            val timestamp = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
+            return Product(
+                name = name,
+                price = price,
+                description = description,
+                category = Category.fromString(category),
+                status = Status.calc(stock, discountRate),
+                stock = stock,
+                discountRate = discountRate,
+                imageUrl = imageUrl,
+                createdAt = timestamp,
+                updatedAt = timestamp,
+                isDeleted = false
+            )
+        }
+    }
 }
 
-fun Product.toResponse() : ProductResponseDto{
+fun Product.toResponse(): ProductResponseDto {
     return ProductResponseDto(
         id = id!!,
         name = name,
         price = price,
         description = description,
-        category = category,
+        category = category.name,
         stock = stock,
-        status = status,
+        status = status.name,
         discountRate = discountRate,
         imageUrl = imageUrl,
         createdAt = createdAt,
@@ -82,7 +110,7 @@ fun Product.toResponse() : ProductResponseDto{
     )
 }
 
-fun Product.toDetailResponse() : ProductDetailResponseDto{
+fun Product.toDetailResponse(): ProductDetailResponseDto {
     return ProductDetailResponseDto(
         id = id!!,
         name = name,
@@ -98,7 +126,7 @@ fun Product.toDetailResponse() : ProductDetailResponseDto{
     )
 }
 
-fun Product.toIdResponse() : IdResponseDto {
+fun Product.toIdResponse(): IdResponseDto {
     return IdResponseDto(
         id = id!!
     )

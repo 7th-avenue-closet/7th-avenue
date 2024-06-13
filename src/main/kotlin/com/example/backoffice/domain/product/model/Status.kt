@@ -6,10 +6,10 @@ enum class Status {
     SOLD_OUT;
 
     companion object {
-        fun calc(stock: Int?, discountRate: Int?) : Status {
-            return if(stock!! < 1)  SOLD_OUT
-            else if(discountRate!!>0) ON_SALE
-            else ON_DISCOUNT
+        fun calc(stock: Int, discountRate: Int): Status {
+            return if (stock < 1) SOLD_OUT
+            else if (discountRate > 0) ON_DISCOUNT
+            else ON_SALE
         }
     }
 }

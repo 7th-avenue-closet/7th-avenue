@@ -18,19 +18,20 @@ class ProductController(
     }
 
     @GetMapping("/{productId}")
-    fun getProduct(@PathVariable("productId") productId: Long):ResponseEntity<ProductDetailResponseDto>{
+    fun getProduct(@PathVariable("productId") productId: Long): ResponseEntity<ProductDetailResponseDto> {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(productId))
     }
 
     @PostMapping
-    fun createProduct(@RequestBody request: CreateProductRequestDto) : ResponseEntity<IdResponseDto>{
+    fun createProduct(@RequestBody request: CreateProductRequestDto): ResponseEntity<Unit> {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(request))
     }
 
     @PutMapping("/{productId}")
     fun updateProduct(
         @PathVariable("productId") productId: Long,
-        @RequestBody request: UpdateProductRequestDto) :ResponseEntity<IdResponseDto>{
+        @RequestBody request: UpdateProductRequestDto
+    ): ResponseEntity<Long> {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.updateProduct(productId, request))
     }
 
