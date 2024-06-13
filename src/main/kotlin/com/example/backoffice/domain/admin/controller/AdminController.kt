@@ -1,7 +1,7 @@
 package com.example.backoffice.domain.admin.controller
 
-import com.example.backoffice.domain.admin.dto.CreateAdminRequest
-import com.example.backoffice.domain.admin.dto.CreateAdminResponse
+import com.example.backoffice.domain.admin.dto.AdminSignUpRequest
+import com.example.backoffice.domain.admin.dto.AdminSignUpResponse
 import com.example.backoffice.domain.admin.service.AdminService
 import com.example.backoffice.domain.user.dto.LoginRequest
 import com.example.backoffice.domain.user.dto.LoginResponse
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/admin")
 @RestController
 class AdminController(private val adminService: AdminService) {
-    @PostMapping
-    fun createAdmin(@RequestBody createAdminRequest: CreateAdminRequest): ResponseEntity<CreateAdminResponse> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(adminService.createAdmin(createAdminRequest))
+    @PostMapping("/sign-up")
+    fun adminSignUp(@RequestBody adminSignUpRequest: AdminSignUpRequest): ResponseEntity<AdminSignUpResponse> {
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminService.createAdmin(adminSignUpRequest))
     }
 
     @PostMapping("/login")

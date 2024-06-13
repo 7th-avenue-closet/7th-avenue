@@ -22,8 +22,8 @@ class SecurityConfig(
     private val accessDeniedHandler: CustomAccessDeniedHandler,
 ) {
     val allowedUrls =
-        arrayOf("/auth/sign-up", "/auth/login", "/swagger-ui/**", "/v3/**", "/error", "/admin", "/admin/login")
-    val allowedUrlsWithGetMethods = arrayOf("/products", "/products/**")
+        arrayOf("/auth/sign-up", "/auth/login", "/swagger-ui/**", "/v3/**", "/error", "/admin/sign-up", "/admin/login")
+    val allowedUrlsWithGetMethods = arrayOf("/products/**")
     val adminOnlyUrls = arrayOf("/admin/**", "/products/**")
 
     @Bean

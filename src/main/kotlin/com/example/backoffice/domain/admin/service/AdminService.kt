@@ -1,7 +1,7 @@
 package com.example.backoffice.domain.admin.service
 
-import com.example.backoffice.domain.admin.dto.CreateAdminRequest
-import com.example.backoffice.domain.admin.dto.CreateAdminResponse
+import com.example.backoffice.domain.admin.dto.AdminSignUpRequest
+import com.example.backoffice.domain.admin.dto.AdminSignUpResponse
 import com.example.backoffice.domain.admin.model.Admin
 import com.example.backoffice.domain.admin.repository.AdminRepository
 import com.example.backoffice.domain.user.dto.LoginRequest
@@ -17,14 +17,14 @@ class AdminService(
     private val passwordEncoder: PasswordEncoder,
     private val jwtHelper: JwtHelper,
 ) {
-    fun createAdmin(request: CreateAdminRequest): CreateAdminResponse {
+    fun createAdmin(request: AdminSignUpRequest): AdminSignUpResponse {
         val (accountId, password) = request
         if (adminRepository.existsByAccountId(accountId)) {
             throw IllegalArgumentException("Admin with account id $accountId already exists")
         }
 
         return adminRepository.save(Admin.of(accountId, passwordEncoder.encode(password)))
-            .run { CreateAdminResponse(id = id!!) }
+            .run { AdminSignUpResponse(id = id!!) }
     }
 
     fun login(request: LoginRequest): LoginResponse {

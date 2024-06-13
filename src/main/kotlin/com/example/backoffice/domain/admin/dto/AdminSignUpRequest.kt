@@ -1,6 +1,6 @@
 package com.example.backoffice.domain.admin.dto
 
-data class CreateAdminRequest(
+data class AdminSignUpRequest(
     val accountId: String,
     val password: String,
 )
