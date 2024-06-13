@@ -21,6 +21,10 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    fun updatePassword(newPassword: String) {
+        this.password = newPassword
+    }
+
     companion object {
         private fun checkAccountId(newAccountId: String) {
             if (newAccountId.matches("^[a-z0-9]{4,10}$".toRegex()) == false) {
