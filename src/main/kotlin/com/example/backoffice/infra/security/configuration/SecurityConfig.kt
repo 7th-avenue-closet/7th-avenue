@@ -19,7 +19,7 @@ class SecurityConfig(
     private val authenticationEntryPoint: CustomAuthenticationEntryPoint,
 ) {
     val allowedUrls =
-        arrayOf("/users/auth/sign-up", "/users/auth/login", "/swagger-ui/**", "/v3/**", "/error")
+        arrayOf("/auth/sign-up", "/auth/login", "/swagger-ui/**", "/v3/**", "/error")
 
     @Bean
     fun filterChain(http: HttpSecurity): DefaultSecurityFilterChain {
