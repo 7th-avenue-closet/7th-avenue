@@ -11,27 +11,19 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "review")
 class Review(
-    @Column(name = "comment")
-    var comment: String,
+    @Column(name = "comment") var comment: String,
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "rating")
-    var rating: Rating,
+    @Enumerated(EnumType.STRING) @Column(name = "rating") var rating: Rating,
 
-    @Column(name = "created_at")
-    val createdAt: ZonedDateTime,
+    @Column(name = "created_at") val createdAt: ZonedDateTime,
 
-    @Column(name = "updated_at")
-    var updatedAt: ZonedDateTime,
+    @Column(name = "updated_at") var updatedAt: ZonedDateTime,
 
-    @Column(name = "is_deleted")
-    var isDeleted: Boolean = false,
+    @Column(name = "is_deleted") var isDeleted: Boolean = false,
 
-    @ManyToOne
-    val user: User,
+    @ManyToOne val user: User,
 
-    @ManyToOne
-    val product: Product,
+    @ManyToOne val product: Product,
 
     ) {
     @Id
@@ -45,7 +37,7 @@ class Review(
             }
         }
 
-        fun of(comment: String, rating: Rating, user: User , product: Product): Review {
+        fun of(comment: String, rating: Rating, user: User, product: Product): Review {
             checkCommentLength(comment)
             val timestamp = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
             return Review(

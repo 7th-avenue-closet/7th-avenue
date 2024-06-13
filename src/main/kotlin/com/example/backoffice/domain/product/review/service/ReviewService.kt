@@ -2,13 +2,11 @@ package com.example.backoffice.domain.product.review.service
 
 import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.product.repository.ProductRepository
-import com.example.backoffice.domain.product.review.dto.CreateReviewRequest
+import com.example.backoffice.domain.product.review.dto.ReviewRequest
 import com.example.backoffice.domain.product.review.model.Rating
 import com.example.backoffice.domain.product.review.model.Review
 import com.example.backoffice.domain.product.review.repository.ReviewRepository
-import com.example.backoffice.domain.user.model.User
 import com.example.backoffice.domain.user.repository.UserRepository
-import com.example.backoffice.infra.security.MemberPrincipal
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +18,7 @@ class ReviewService(
     val userRepository: UserRepository
 ) {
     @Transactional
-    fun createReview(userId: Long, productId: Long, request: CreateReviewRequest) {
+    fun createReview(userId: Long, productId: Long, request: ReviewRequest) {
         val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         val (comment, rating) = request
         val reviewer = userRepository.findByIdOrNull(userId)
@@ -33,5 +31,16 @@ class ReviewService(
             product = product
         )
         reviewRepository.save(review)
+    }
+
+    @Transactional
+    fun updateReview(userId: Long, productId: Long, reviewId: Long, request: ReviewRequest) {
+        productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
+        userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+
+        val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review", reviewId)
+
+        review.comment = request.comment
+        review.rating = Rating.fromString(request.rating)
     }
 }

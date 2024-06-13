@@ -1,6 +1,6 @@
 package com.example.backoffice.domain.product.review.controller
 
-import com.example.backoffice.domain.product.review.dto.CreateReviewRequest
+import com.example.backoffice.domain.product.review.dto.ReviewRequest
 import com.example.backoffice.domain.product.review.service.ReviewService
 import com.example.backoffice.infra.security.MemberPrincipal
 import org.springframework.http.HttpStatus
@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -19,14 +20,22 @@ class ReviewController(
 ) {
     @PostMapping
     fun createReview(
-        @AuthenticationPrincipal
-        principal: MemberPrincipal,
+        @AuthenticationPrincipal principal: MemberPrincipal,
         @PathVariable productId: Long,
-        @RequestBody createReviewRequest: CreateReviewRequest
+        @RequestBody reviewRequest: ReviewRequest
     ): ResponseEntity<Unit> {
-        reviewService.createReview(principal.id, productId, createReviewRequest)
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .build()
+        reviewService.createReview(principal.id, productId, reviewRequest)
+        return ResponseEntity.status(HttpStatus.OK).build()
+    }
+
+    @PutMapping("/{reviewId}")
+    fun updateReview(
+        @AuthenticationPrincipal principal: MemberPrincipal,
+        @PathVariable productId: Long,
+        @PathVariable reviewId: Long,
+        @RequestBody reviewRequest: ReviewRequest
+    ): ResponseEntity<Unit> {
+        reviewService.updateReview(principal.id, productId, reviewId, reviewRequest)
+        return ResponseEntity.status(HttpStatus.OK).build()
     }
 }

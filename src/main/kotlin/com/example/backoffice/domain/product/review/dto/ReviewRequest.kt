@@ -1,6 +1,6 @@
 package com.example.backoffice.domain.product.review.dto
 
-data class CreateReviewRequest(
+data class ReviewRequest(
     val comment: String,
     val rating: String,
 )
