@@ -23,7 +23,7 @@ class ProductService (
     }
 
     @Transactional
-    fun createProduct(request: CreateProductRequestDto): ProductResponseDto {
+    fun createProduct(request: CreateProductRequestDto): IdResponseDto {
 
         return productRepository.save(
             Product(
@@ -38,7 +38,7 @@ class ProductService (
                 createdAt = ZonedDateTime.now(),
                 updatedAt = ZonedDateTime.now()
             )
-        ).toResponse()
+        ).toIdResponse()
     }
 
     fun updateProduct(productId: Long, request: UpdateProductRequestDto) : IdResponseDto {

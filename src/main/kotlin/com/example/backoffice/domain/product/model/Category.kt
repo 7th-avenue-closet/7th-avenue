@@ -13,7 +13,7 @@ enum class Category {
             return try {
                 valueOf(category.uppercase())
             } catch (e: IllegalArgumentException) {
-                throw InvalidObjectException("해당하는 카테고리가 없습니다.")
+                throw InvalidObjectException("unknown category: $category.")
             }
         }
     }

@@ -8,4 +8,5 @@ data class UpdateProductRequestDto (
     val stock: Int?,
     val discountRate: Int?,
     val imageUrl: String?
-)
+) {
+}
