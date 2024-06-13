@@ -1,8 +1,6 @@
 package com.example.backoffice.domain.product.dto
 
-import com.example.backoffice.domain.product.model.Category
 import com.example.backoffice.domain.product.model.Product
-import com.example.backoffice.domain.product.model.Status
 import java.time.ZonedDateTime
 
 data class ProductResponseDto(
