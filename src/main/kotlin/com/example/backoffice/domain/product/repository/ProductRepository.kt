@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface ProductRepository : JpaRepository<Product, Long> {
     fun findAllByIsDeletedFalse(): List<Product>
-    fun findByIdAndIsDeletedFalse(id: Long): Product
+    fun findByIdAndIsDeletedFalse(id: Long): Product?
 }

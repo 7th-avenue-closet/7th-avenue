@@ -17,7 +17,8 @@ class ProductService(
     }
 
     fun getProductById(productId: Long): ProductDetailResponseDto {
-        val product = productRepository.findByIdAndIsDeletedFalse(productId)
+        val product =
+            productRepository.findByIdAndIsDeletedFalse(productId) ?: throw ModelNotFoundException("Product", productId)
         return product.toDetailResponse()
     }
 
