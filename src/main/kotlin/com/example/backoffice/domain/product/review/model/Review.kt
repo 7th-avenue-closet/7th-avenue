@@ -51,4 +51,11 @@ class Review(
             )
         }
     }
+
+    fun updateReview(
+        comment: String, rating: String
+    ) {
+        this.comment = comment
+        this.rating = Rating.fromString(rating)
+    }
 }

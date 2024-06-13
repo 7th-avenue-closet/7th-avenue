@@ -38,9 +38,12 @@ class ReviewService(
         productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
         userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
+        val (comment, rating) = request
         val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review", reviewId)
 
-        review.comment = request.comment
-        review.rating = Rating.fromString(request.rating)
+        review.updateReview(
+            comment = comment,
+            rating = rating
+        )
     }
 }
