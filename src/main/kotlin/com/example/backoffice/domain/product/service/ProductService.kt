@@ -1,5 +1,6 @@
 package com.example.backoffice.domain.product.service
 
+import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.product.dto.*
 import com.example.backoffice.domain.product.model.*
 import com.example.backoffice.domain.product.repository.ProductRepository
@@ -18,13 +19,12 @@ class ProductService (
     }
 
     fun getProductById(productId: Long): ProductDetailResponseDto {
-        val product = productRepository.findByIdOrNull(productId) ?: throw RuntimeException("Product with ID $productId not found")
+        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException ("Product", productId)
         return product.toDetailResponse()
     }
 
     @Transactional
     fun createProduct(request: CreateProductRequestDto): IdResponseDto {
-
         return productRepository.save(
             Product(
                 name = request.name,
@@ -41,14 +41,16 @@ class ProductService (
         ).toIdResponse()
     }
 
+    @Transactional
     fun updateProduct(productId: Long, request: UpdateProductRequestDto) : IdResponseDto {
-        val product = productRepository.findByIdOrNull(productId) ?: throw RuntimeException("Product with ID $productId not found")
+        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException ("Product", productId)
         product.update(request)
         return product.toIdResponse()
     }
 
+    @Transactional
     fun deleteProduct(productId: Long) {
-        val product = productRepository.findByIdOrNull(productId) ?: throw RuntimeException("Product with ID $productId not found")
+        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException ("Product", productId)
         product.delete()
         productRepository.save(product)
     }
