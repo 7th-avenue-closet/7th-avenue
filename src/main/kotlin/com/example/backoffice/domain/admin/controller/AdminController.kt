@@ -24,9 +24,4 @@ class AdminController(private val adminService: AdminService) {
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminService.login(loginRequest))
     }
-
-    @PostMapping("/test")
-    fun test(): ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.CREATED).body("test")
-    }
 }
