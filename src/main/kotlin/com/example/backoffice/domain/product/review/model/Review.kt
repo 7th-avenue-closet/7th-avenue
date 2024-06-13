@@ -39,14 +39,14 @@ class Review(
     var id: Long? = null
 
     companion object {
-        private fun validateCommentLength(newComment: String) {
+        private fun checkCommentLength(newComment: String) {
             if (newComment.isEmpty() || newComment.length > 200) {
                 throw InvalidObjectException("리뷰의 내용은 1자 이상 200자 이하로 작성해주세요!")
             }
         }
 
         fun of(comment: String, rating: Rating, user: User , product: Product): Review {
-            validateCommentLength(comment)
+            checkCommentLength(comment)
             val timestamp = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
             return Review(
                 comment = comment,

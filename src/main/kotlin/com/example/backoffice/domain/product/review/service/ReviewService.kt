@@ -21,15 +21,14 @@ class ReviewService(
     @Transactional
     fun createReview(user: User, productId: Long, request: CreateReviewRequest) {
         val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
-        val (comment) = request
+        val (comment, rating) = request
         val userId = user.id
         val reviewer = userRepository.findByIdOrNull(userId)
             ?: throw ModelNotFoundException("User", userId!!)
-        val rating = Rating.fromString(request.rating)
 
         val review = Review.of(
             comment = comment,
-            rating = rating,
+            rating = Rating.fromString(rating),
             user = reviewer,
             product = product
         )
