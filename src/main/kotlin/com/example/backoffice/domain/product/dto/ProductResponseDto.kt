@@ -12,8 +12,8 @@ data class ProductResponseDto(
     val description: String,
     val category: String,
     val status: String,
-    val stock: Int?,
-    val discountRate: Int?,
+    val stock: Int,
+    val discountRate: Int,
     val imageUrl: String?,
     val createdAt: ZonedDateTime,
     val updatedAt: ZonedDateTime
