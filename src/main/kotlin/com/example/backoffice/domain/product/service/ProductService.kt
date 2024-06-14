@@ -4,7 +4,6 @@ import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.product.dto.*
 import com.example.backoffice.domain.product.model.Product
 import com.example.backoffice.domain.product.repository.ProductRepository
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,12 +12,14 @@ class ProductService(
     private val productRepository: ProductRepository,
 ) {
     fun getProducts(): List<ProductResponseDto> {
-        return productRepository.findAllByIsDeletedFalse().map { it.toResponse() }
+        return productRepository.findAllByDeletedAtIsNull().map { it.toResponse() }
     }
 
     fun getProductById(productId: Long): ProductDetailResponseDto {
-        val product =
-            productRepository.findByIdAndIsDeletedFalse(productId) ?: throw ModelNotFoundException("Product", productId)
+        val product = productRepository.findByIdAndDeletedAtIsNull(productId) ?: throw ModelNotFoundException(
+            "Product",
+            productId
+        )
         return product.toDetailResponse()
     }
 
@@ -38,7 +39,10 @@ class ProductService(
 
     @Transactional
     fun updateProduct(productId: Long, request: UpdateProductRequestDto): IdResponseDto {
-        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
+        val product = productRepository.findByIdAndDeletedAtIsNull(productId) ?: throw ModelNotFoundException(
+            "Product",
+            productId
+        )
         product.update(
             name = request.name,
             price = request.price,
@@ -53,7 +57,10 @@ class ProductService(
 
     @Transactional
     fun deleteProduct(productId: Long) {
-        val product = productRepository.findByIdOrNull(productId) ?: throw ModelNotFoundException("Product", productId)
+        val product = productRepository.findByIdAndDeletedAtIsNull(productId) ?: throw ModelNotFoundException(
+            "Product",
+            productId
+        )
         product.delete()
     }
 
