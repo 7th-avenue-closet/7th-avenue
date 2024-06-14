@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 import java.util.*
 
 @Service
@@ -18,27 +17,11 @@ class ImageUploadService(
     @Value("\${BUCKET_NAME}")
     private lateinit var bucket: String
 
-    fun upload(file: MultipartFile): String? {
-        val image = listOf("jpg", "jpeg", "png", "gif", "bmp")
-        val fileName = file.originalFilename ?: throw IOException("File name is empty")
-        val exception = fileName.substringAfterLast('.')
-        val uploadName = LocalDateTime.now().toString() + fileName
-        if (!image.contains(exception)) return null
-        val metadata = ObjectMetadata().apply {
-            contentType = "image/${exception}"
-            contentLength = file.size
-        }
-        s3Client.putObject(bucket, uploadName, file.inputStream, metadata)
-        return s3Client.getUrl(bucket, uploadName).toString()
-    }
-
-
     fun presignedUrl(domain: String, fileName: String): String {
-        val expiration = Date(System.currentTimeMillis() + 3 * 60 * 60 * 1000)
+        val expiration = Date(System.currentTimeMillis() + 60 * 60 * 1000)
         val url = GeneratePresignedUrlRequest(bucket, "$domain/$fileName")
             .withMethod(com.amazonaws.HttpMethod.PUT)
             .withExpiration(expiration)
-
         return s3Client.generatePresignedUrl(url).toString()
     }
 
