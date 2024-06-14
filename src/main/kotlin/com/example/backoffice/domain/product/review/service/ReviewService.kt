@@ -1,7 +1,7 @@
 package com.example.backoffice.domain.product.review.service
 
 import com.example.backoffice.common.exception.ModelNotFoundException
-import com.example.backoffice.common.exception.UnauthorizedException
+import com.example.backoffice.common.exception.AccessDeniedException
 import com.example.backoffice.domain.product.repository.ProductRepository
 import com.example.backoffice.domain.product.review.dto.ReviewRequest
 import com.example.backoffice.domain.product.review.model.Rating
@@ -33,7 +33,7 @@ class ReviewService(
         if (!productRepository.existsById(productId)) throw ModelNotFoundException("Product", productId)
         val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review", reviewId)
 
-        if (review.user.id != userId) throw UnauthorizedException("You do not have permission to modify.")
+        if (review.user.id != userId) throw AccessDeniedException("You do not have permission to modify.")
 
         val (comment, rating) = request
 
@@ -47,7 +47,7 @@ class ReviewService(
         if (!productRepository.existsById(productId)) throw ModelNotFoundException("Product", productId)
         val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review", reviewId)
 
-        if (review.user.id != userId) throw UnauthorizedException("You do not have permission to modify.")
+        if (review.user.id != userId) throw AccessDeniedException("You do not have permission to delete.")
 
         review.softDelete()
     }

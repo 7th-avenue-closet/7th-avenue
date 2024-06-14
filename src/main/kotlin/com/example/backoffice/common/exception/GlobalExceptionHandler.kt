@@ -28,10 +28,10 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(message = e.message))
     }
 
-    @ExceptionHandler(UnauthorizedException::class)
-    fun handleUnauthorizedException(e: UnauthorizedException): ResponseEntity<ErrorResponse> {
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDeniedException(e: AccessDeniedException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
+            .status(HttpStatus.FORBIDDEN)
             .body(ErrorResponse(message = e.message))
     }
 }
