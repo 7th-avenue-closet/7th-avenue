@@ -34,4 +34,11 @@ class GlobalExceptionHandler {
             .status(HttpStatus.FORBIDDEN)
             .body(ErrorResponse(message = e.message))
     }
+
+    @ExceptionHandler(AlreadyDeletedException::class)
+    fun handleAlreadyDeletedException(e: AlreadyDeletedException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(message = e.message))
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.backoffice.domain.admin.service
 
+import com.example.backoffice.common.exception.AlreadyDeletedException
 import com.example.backoffice.domain.admin.dto.AdminSignUpRequest
 import com.example.backoffice.domain.admin.dto.AdminSignUpResponse
 import com.example.backoffice.domain.admin.model.Admin
@@ -48,7 +49,14 @@ class AdminService(
     @Transactional
     fun deleteReviews(reviewIds: List<Long>) {
         val reviews = reviewRepository.findAllById(reviewIds)
-        reviews.forEach { it.deletedAt = ZonedDateTime.now() }
+        val now = ZonedDateTime.now()
+
+        reviews.forEach {
+            if (it.deletedAt != null) {
+                throw AlreadyDeletedException("Review", it.id!!)
+            }
+            it.deletedAt = now
+        }
         reviewRepository.saveAll(reviews)
     }
 }
