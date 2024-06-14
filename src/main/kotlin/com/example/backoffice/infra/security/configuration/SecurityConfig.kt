@@ -2,7 +2,6 @@ package com.example.backoffice.infra.security.configuration
 
 import com.example.backoffice.infra.security.CustomAccessDeniedHandler
 import com.example.backoffice.infra.security.CustomAuthenticationEntryPoint
-import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -24,7 +23,6 @@ class SecurityConfig(
     val allowedUrls =
         arrayOf("/auth/sign-up", "/auth/login", "/swagger-ui/**", "/v3/**", "/error", "/admin/sign-up", "/admin/login")
     val allowedUrlsWithGetMethods = arrayOf("/products/**")
-    val adminOnlyUrls = arrayOf("/admin/**", "/products/**")
 
     @Bean
     fun filterChain(http: HttpSecurity): DefaultSecurityFilterChain {
@@ -38,8 +36,6 @@ class SecurityConfig(
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, *allowedUrlsWithGetMethods)
                     .permitAll()
-                    .requestMatchers(*adminOnlyUrls)
-                    .hasRole(MemberRole.ADMIN.name)
                     .anyRequest()
                     .authenticated()
             }
@@ -51,6 +47,5 @@ class SecurityConfig(
                 it.accessDeniedHandler(accessDeniedHandler)
             }
             .build()
-
     }
 }
