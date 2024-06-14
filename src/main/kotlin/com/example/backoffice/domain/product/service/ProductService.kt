@@ -2,6 +2,7 @@ package com.example.backoffice.domain.product.service
 
 import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.product.dto.*
+import com.example.backoffice.domain.product.model.Category
 import com.example.backoffice.domain.product.model.Product
 import com.example.backoffice.domain.product.repository.ProductRepository
 import org.springframework.stereotype.Service
@@ -11,8 +12,9 @@ import org.springframework.transaction.annotation.Transactional
 class ProductService(
     private val productRepository: ProductRepository,
 ) {
-    fun getProducts(): List<ProductResponseDto> {
-        return productRepository.findAllByDeletedAtIsNull().map { it.toResponse() }
+    fun getProducts(pageSize: Long, sorted: String?, cursor: Long?, category: Category?): List<ProductResponseDto> {
+        return productRepository.findByPageableAndDeleted(pageSize, sorted, cursor, category).map { it.toResponse() }
+//        return productRepository.findAllByDeletedAtIsNull().map { it.toResponse() }
     }
 
     fun getProductById(productId: Long): ProductDetailResponseDto {

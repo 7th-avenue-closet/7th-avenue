@@ -1,6 +1,7 @@
 package com.example.backoffice.domain.product.controller
 
 import com.example.backoffice.domain.product.dto.*
+import com.example.backoffice.domain.product.model.Category
 import com.example.backoffice.domain.product.service.ProductService
 import com.example.backoffice.infra.security.CustomPreAuthorize
 import com.example.backoffice.infra.security.MemberPrincipal
@@ -18,8 +19,10 @@ class ProductController(
 ) {
 
     @GetMapping
-    fun getProducts(): ResponseEntity<List<ProductResponseDto>> {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts())
+    fun getProducts(
+        @RequestParam pageSize: Long, @RequestParam sorted: String?, @RequestParam cursor: Long?, category: Category?
+    ): ResponseEntity<List<ProductResponseDto>> {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts(pageSize, sorted, cursor, category))
     }
 
     @GetMapping("/{productId}")
