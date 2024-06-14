@@ -51,16 +51,22 @@ class AdminService(
     }
 
     @Transactional
-    fun deleteReviews(reviewIds: List<Long>) {
-        val reviews = reviewRepository.findAllById(reviewIds)
+    fun deleteReviews( userId: Long?, reviewIds: List<Long>?) {
+        val reviews = when {
+            userId != null -> reviewRepository.findByUserIdAndDeletedAtIsNull(userId)
+            reviewIds != null -> reviewRepository.findAllById(reviewIds)
+            else -> throw IllegalArgumentException("Please make sure to enter either ReviewId or UserId.")
+        }
+
         val now = ZonedDateTime.now()
 
-        reviews.forEach {
-            if (it.deletedAt != null) {
-                throw ModelNotFoundException("Review", it.id!!)
+        reviews.forEach { review ->
+            if (review.deletedAt != null) {
+                throw ModelNotFoundException("Review", review.id)
             }
-            it.deletedAt = now
+            review.deletedAt = now
         }
+
         reviewRepository.saveAll(reviews)
     }
 }

@@ -29,8 +29,11 @@ class AdminController(private val adminService: AdminService) {
     }
 
     @DeleteMapping("/reviews")
-    fun deleteReviews(@RequestBody reviewIds: List<Long>): ResponseEntity<Unit> {
-        adminService.deleteReviews(reviewIds)
+    fun deleteReviews(
+        @RequestParam userId: Long?,
+        @RequestBody reviewIds: List<Long>?
+    ): ResponseEntity<Unit> {
+        adminService.deleteReviews(userId, reviewIds)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
