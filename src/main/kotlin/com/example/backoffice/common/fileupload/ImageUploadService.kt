@@ -33,4 +33,14 @@ class ImageUploadService(
     }
 
 
+    fun presignedUrl(fileName: String): String {
+        val expiration = Date(System.currentTimeMillis() + 3 * 60 * 60 * 1000)
+        val url = GeneratePresignedUrlRequest(bucket, fileName)
+            .withMethod(com.amazonaws.HttpMethod.PUT)
+            .withExpiration(expiration)
+
+        return s3Client.generatePresignedUrl(url).toString()
+    }
+
+
 }
