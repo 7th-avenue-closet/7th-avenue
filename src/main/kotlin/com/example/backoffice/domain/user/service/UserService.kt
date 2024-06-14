@@ -16,6 +16,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val jwtHelper: JwtHelper,
     private val passwordEncoder: PasswordEncoder,
+    private val passwordHistoryService: PasswordHistoryService,
 ) {
     @Transactional
     fun signUp(request: SignUpRequest): SignUpResponse {
@@ -23,19 +24,18 @@ class UserService(
         if (userRepository.existsByAccountId(accountId)) {
             throw IllegalArgumentException("Account id: '${accountId}' already exists.")
         }
-        checkPassword(password)
-        val encodedPassword = passwordEncoder.encode(password)
+        checkPasswordRule(password)
 
-        return userRepository
-            .save(
-                User.of(
-                    accountId = accountId,
-                    name = name,
-                    password = encodedPassword,
-                    imageUrl = imageUrl
-                )
-            )
-            .run { SignUpResponse(userId = id!!) }
+        val encodedPassword = passwordEncoder.encode(password)
+        val user = User.of(
+            accountId = accountId,
+            name = name,
+            password = encodedPassword,
+            imageUrl = imageUrl
+        )
+
+        passwordHistoryService.updatePasswordHistory(user)
+        return userRepository.save(user).run { SignUpResponse(userId = id!!) }
     }
 
     fun login(request: LoginRequest): LoginResponse {
@@ -49,14 +49,20 @@ class UserService(
     @Transactional
     fun updatePassword(userId: Long, request: UpdatePasswordRequest) {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
-        if (passwordEncoder.matches(request.currentPassword, user.password) == false) {
+        val (currentPassword, newPassword) = request
+
+        if (passwordEncoder.matches(currentPassword, user.password) == false) {
             throw IllegalArgumentException("Invalid Credential.")
         }
-        checkPassword(request.newPassword)
-        user.updatePassword(newPassword = passwordEncoder.encode(request.newPassword))
+
+        checkPasswordRule(newPassword)
+        passwordHistoryService.checkPasswordNotInRecentHistory(user, newPassword)
+
+        user.updatePassword(newPassword = passwordEncoder.encode(newPassword))
+        passwordHistoryService.updatePasswordHistory(user)
     }
 
-    private fun checkPassword(password: String) {
+    private fun checkPasswordRule(password: String) {
         if (password.matches("^[a-zA-Z0-9!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]{8,15}\$".toRegex()) == false) {
             throw IllegalArgumentException("Invalid Password.")
         }
