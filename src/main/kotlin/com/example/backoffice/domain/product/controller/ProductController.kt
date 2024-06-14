@@ -24,10 +24,11 @@ class ProductController(
         @RequestParam sorted: String?,
         @RequestParam cursor: Long = 10,
         @RequestParam category: Category?,
-        @RequestParam name: String?
+        @RequestParam name: String?,
+        @RequestParam onDiscount: Boolean?
     ): ResponseEntity<List<ProductResponseDto>> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.getProducts(pageSize, sorted, cursor, category, name))
+            .body(productService.getProducts(pageSize, sorted, cursor, category, name, onDiscount))
     }
 
     @GetMapping("/{productId}")

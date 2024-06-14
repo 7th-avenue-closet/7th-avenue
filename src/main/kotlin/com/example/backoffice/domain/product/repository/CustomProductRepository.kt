@@ -9,6 +9,7 @@ interface CustomProductRepository {
         sorted: String?,
         cursor: Long,
         category: Category?,
-        name: String?
+        name: String?,
+        onDiscount: Boolean?
     ): List<Product>
 }

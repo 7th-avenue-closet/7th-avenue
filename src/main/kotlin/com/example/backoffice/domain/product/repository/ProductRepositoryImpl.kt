@@ -3,6 +3,7 @@ package com.example.backoffice.domain.product.repository
 import com.example.backoffice.domain.product.model.Category
 import com.example.backoffice.domain.product.model.Product
 import com.example.backoffice.domain.product.model.QProduct
+import com.example.backoffice.domain.product.model.Status
 import com.example.backoffice.infra.querydsl.QueryDslSupport
 import com.querydsl.core.BooleanBuilder
 import com.querydsl.core.types.OrderSpecifier
@@ -19,7 +20,8 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
         sorted: String?,
         cursor: Long,
         category: Category?,
-        name: String?
+        name: String?,
+        onDiscount: Boolean?
     ): List<Product> {
         val builder = BooleanBuilder()
         builder.and(product.deletedAt.isNull())
@@ -27,6 +29,10 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
         category?.let { builder.and(product.category.eq(it)) }
         name?.let { builder.and(product.name.contains(it)) }
         builder.and(product.stock.gt(0))
+        if (onDiscount == true) {
+            builder.and(product.status.eq(Status.ON_DISCOUNT))
+        }
+
 
         val sort = getOrderSpecifier(sorted)
 

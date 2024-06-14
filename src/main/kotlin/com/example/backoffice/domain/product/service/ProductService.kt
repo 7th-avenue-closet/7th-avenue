@@ -17,9 +17,10 @@ class ProductService(
         sorted: String?,
         cursor: Long,
         category: Category?,
-        name: String?
+        name: String?,
+        onDiscount: Boolean?
     ): List<ProductResponseDto> {
-        return productRepository.findByPageableAndDeleted(pageSize, sorted, cursor, category, name)
+        return productRepository.findByPageableAndDeleted(pageSize, sorted, cursor, category, name, onDiscount)
             .map { it.toResponse() }
     }
 
