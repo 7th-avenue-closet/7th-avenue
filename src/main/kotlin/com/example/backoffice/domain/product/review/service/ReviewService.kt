@@ -42,5 +42,13 @@ class ReviewService(
         )
     }
 
+    @Transactional
+    fun deleteReview(userId: Long, productId: Long, reviewId: Long) {
+        if (!productRepository.existsById(productId)) throw ModelNotFoundException("Product", productId)
+        val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review", reviewId)
 
+        if (review.user.id != userId) throw UnauthorizedException("You do not have permission to modify.")
+
+        review.softDelete()
+    }
 }

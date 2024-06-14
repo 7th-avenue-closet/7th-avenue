@@ -59,4 +59,8 @@ class Review(
         this.comment = comment
         this.rating = Rating.fromString(rating)
     }
+
+    fun softDelete() {
+        isDeleted = true
+    }
 }
