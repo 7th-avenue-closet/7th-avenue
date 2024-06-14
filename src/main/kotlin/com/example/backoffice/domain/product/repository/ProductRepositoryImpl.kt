@@ -24,7 +24,6 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
         cursor.let { builder.and(product.id.gt(cursor)) }
         category?.let { builder.and(product.category.eq(category)) }
         builder.and(product.stock.gt(0))
-//가격순,이름순??,아이디순서 동적쿼리
 
         val sort = getOrderSpecifier(sorted)
 
