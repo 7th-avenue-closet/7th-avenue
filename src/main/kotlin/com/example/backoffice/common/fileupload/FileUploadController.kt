@@ -6,6 +6,7 @@ import com.example.backoffice.infra.security.MemberRole
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -26,14 +27,14 @@ class FileUploadController(
             .status(HttpStatus.CREATED)
             .body(service.presignedUrl(domain, fileName))
     }
-    
+
     @DeleteMapping("/images")
     fun deleteImage(
         @AuthenticationPrincipal principal: MemberPrincipal,
-        @RequestParam domain: String, 
-        @RequestParam fileName: String
-    ): ResponseEntity<Unit> =  = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.delete(domain, fileName))
+        @RequestParam domain: String,
+        @RequestParam fileName: String,
+    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
+        ResponseEntity.status(HttpStatus.OK).body(service.delete(domain, fileName))
     }
 
 }
