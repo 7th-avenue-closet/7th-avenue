@@ -11,7 +11,7 @@ data class ReviewResponse(
     val comment: String,
     val createdAt: ZonedDateTime,
     val updatedAt: ZonedDateTime,
-    val isDeleted: Boolean,
+    val deletedAt: ZonedDateTime?,
     val productId : Long
     // val user: UserResponse
 )
@@ -22,7 +22,7 @@ fun Review.toResponse(): ReviewResponse {
         comment = comment,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        isDeleted = isDeleted,
+        deletedAt = deletedAt,
         productId = product.toResponse().id
     )
 }

@@ -40,6 +40,6 @@ class AdminService(
     }
 
     fun getAllReviews(): List<ReviewResponse> {
-        return reviewRepository.findAllByIsDeletedFalse().map { it.toResponse() }
+        return reviewRepository.findAByDeletedAtIsNull().map { it.toResponse() }
     }
 }
