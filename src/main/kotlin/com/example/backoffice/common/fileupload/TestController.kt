@@ -21,7 +21,7 @@ class TestController(
     fun presignedUrl(@RequestParam fileName: String): ResponseEntity<String> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(service.presignedUrl(fileName))
+            .body(service.presignedUrl("test", fileName))
     }
 
 }

@@ -33,9 +33,9 @@ class ImageUploadService(
     }
 
 
-    fun presignedUrl(fileName: String): String {
+    fun presignedUrl(domain: String, fileName: String): String {
         val expiration = Date(System.currentTimeMillis() + 3 * 60 * 60 * 1000)
-        val url = GeneratePresignedUrlRequest(bucket, fileName)
+        val url = GeneratePresignedUrlRequest(bucket, "$domain/$fileName")
             .withMethod(com.amazonaws.HttpMethod.PUT)
             .withExpiration(expiration)
 
