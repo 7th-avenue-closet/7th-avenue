@@ -21,7 +21,7 @@ class ProductController(
     @GetMapping
     fun getProducts(
         @RequestParam pageSize: Long = 10,
-        @RequestParam sorted: String?,
+        @RequestParam sorted: String = "id.desc",
         @RequestParam cursor: Long = 10,
         @RequestParam category: Category?,
         @RequestParam name: String?,

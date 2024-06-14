@@ -49,7 +49,9 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
             "price.asc" -> product.price.asc()
             "name.desc" -> product.name.desc()
             "name.asc" -> product.name.asc()
-            else -> product.id.desc()
+            "id.desc" -> product.id.desc()
+            "id.asc" -> product.id.asc()
+            else -> throw IllegalArgumentException("ColumnSorted '$column' is unknown")
         }
     }
 
