@@ -4,7 +4,6 @@ import com.example.backoffice.domain.order.dto.OrderRequest
 import com.example.backoffice.domain.order.model.Order
 import com.example.backoffice.domain.order.model.OrderProduct
 import com.example.backoffice.domain.order.repository.IOrderRepository
-import com.example.backoffice.domain.order.repository.OrderRepositoryImpl
 import com.example.backoffice.domain.product.model.Product
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +19,7 @@ class OrderService(
         val totalPrices = getTotalPriceFromProducts(products, orderRequests)
         val order = Order.of(
             totalPrice = totalPrices.sum(),
-            status = "ON_SALE",
+            status = "PLACED",
             user = user
         )
         iOrderRepository.save(order)
