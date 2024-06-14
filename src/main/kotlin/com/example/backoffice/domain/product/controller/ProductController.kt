@@ -31,10 +31,9 @@ class ProductController(
     fun createProduct(
         @AuthenticationPrincipal principal: MemberPrincipal,
         @RequestBody request: CreateProductRequestDto,
-    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
+    ): ResponseEntity<IdResponseDto> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
         ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(request))
     }
-
 
     @PutMapping("/{productId}")
     fun updateProduct(

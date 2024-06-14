@@ -39,8 +39,8 @@ class Product(
     @Column(name = "updated_at", nullable = false)
     var updatedAt: ZonedDateTime,
 
-    @Column(name = "is_deleted")
-    var isDeleted: Boolean = false,
+    @Column(name = "deleted_at")
+    var deletedAt: ZonedDateTime? = null,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +54,7 @@ class Product(
         category: String,
         stock: Int,
         discountRate: Int,
-        imageUrl: String?
+        imageUrl: String?,
     ) {
         this.name = name
         this.price = price
@@ -67,7 +67,7 @@ class Product(
     }
 
     fun delete() {
-        isDeleted = true
+        this.deletedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
     }
 
     companion object {
@@ -78,7 +78,7 @@ class Product(
             category: String,
             stock: Int,
             discountRate: Int,
-            imageUrl: String?
+            imageUrl: String?,
         ): Product {
             val timestamp = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
             return Product(
@@ -92,7 +92,6 @@ class Product(
                 imageUrl = imageUrl,
                 createdAt = timestamp,
                 updatedAt = timestamp,
-                isDeleted = false
             )
         }
     }
