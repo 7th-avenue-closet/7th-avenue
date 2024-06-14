@@ -1,10 +1,11 @@
 package com.example.backoffice.infra.security.configuration
 
+import com.example.backoffice.infra.security.CustomAccessDeniedHandler
 import com.example.backoffice.infra.security.CustomAuthenticationEntryPoint
-import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -17,9 +18,11 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val authenticationEntryPoint: CustomAuthenticationEntryPoint,
+    private val accessDeniedHandler: CustomAccessDeniedHandler,
 ) {
     val allowedUrls =
-        arrayOf("/users/auth/sign-up", "/users/auth/login", "/swagger-ui/**", "/v3/**", "/error")
+        arrayOf("/auth/sign-up", "/auth/login", "/swagger-ui/**", "/v3/**", "/error", "/admin/sign-up", "/admin/login")
+    val allowedUrlsWithGetMethods = arrayOf("/products/**")
 
     @Bean
     fun filterChain(http: HttpSecurity): DefaultSecurityFilterChain {
@@ -31,8 +34,8 @@ class SecurityConfig(
                 it
                     .requestMatchers(*allowedUrls)
                     .permitAll()
-                    .requestMatchers("/admin/**")
-                    .hasRole(MemberRole.ADMIN.name)
+                    .requestMatchers(HttpMethod.GET, *allowedUrlsWithGetMethods)
+                    .permitAll()
                     .anyRequest()
                     .authenticated()
             }
@@ -41,8 +44,8 @@ class SecurityConfig(
                 BasicAuthenticationFilter::class.java,
             ).exceptionHandling {
                 it.authenticationEntryPoint(authenticationEntryPoint)
+                it.accessDeniedHandler(accessDeniedHandler)
             }
             .build()
-
     }
 }

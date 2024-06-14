@@ -1,40 +1,41 @@
 package com.example.backoffice.domain.user.service
 
-import com.example.backoffice.domain.user.dto.LoginRequest
-import com.example.backoffice.domain.user.dto.LoginResponse
-import com.example.backoffice.domain.user.dto.SignUpRequest
-import com.example.backoffice.domain.user.dto.SignUpResponse
+import com.example.backoffice.common.exception.ModelNotFoundException
+import com.example.backoffice.domain.user.dto.*
 import com.example.backoffice.domain.user.model.User
 import com.example.backoffice.domain.user.repository.UserRepository
 import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtHelper
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
     private val jwtHelper: JwtHelper,
     private val passwordEncoder: PasswordEncoder,
+    private val passwordHistoryService: PasswordHistoryService,
 ) {
+    @Transactional
     fun signUp(request: SignUpRequest): SignUpResponse {
         val (accountId, password, name, imageUrl) = request
         if (userRepository.existsByAccountId(accountId)) {
             throw IllegalArgumentException("Account id: '${accountId}' already exists.")
         }
-        checkPassword(password)
-        val encodedPassword = passwordEncoder.encode(password)
+        checkPasswordRule(password)
 
-        return userRepository
-            .save(
-                User.of(
-                    accountId = accountId,
-                    name = name,
-                    password = encodedPassword,
-                    imageUrl = imageUrl
-                )
-            )
-            .run { SignUpResponse(userId = id!!) }
+        val encodedPassword = passwordEncoder.encode(password)
+        val user = User.of(
+            accountId = accountId,
+            name = name,
+            password = encodedPassword,
+            imageUrl = imageUrl
+        )
+
+        passwordHistoryService.updatePasswordHistory(user)
+        return userRepository.save(user).run { SignUpResponse(userId = id!!) }
     }
 
     fun login(request: LoginRequest): LoginResponse {
@@ -45,7 +46,23 @@ class UserService(
         return LoginResponse(accessToken = jwtHelper.generateToken(user.id!!, MemberRole.USER))
     }
 
-    private fun checkPassword(password: String) {
+    @Transactional
+    fun updatePassword(userId: Long, request: UpdatePasswordRequest) {
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+        val (currentPassword, newPassword) = request
+
+        if (passwordEncoder.matches(currentPassword, user.password) == false) {
+            throw IllegalArgumentException("Invalid Credential.")
+        }
+
+        checkPasswordRule(newPassword)
+        passwordHistoryService.checkPasswordNotInRecentHistory(user, newPassword)
+
+        user.updatePassword(newPassword = passwordEncoder.encode(newPassword))
+        passwordHistoryService.updatePasswordHistory(user)
+    }
+
+    private fun checkPasswordRule(password: String) {
         if (password.matches("^[a-zA-Z0-9!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]{8,15}\$".toRegex()) == false) {
             throw IllegalArgumentException("Invalid Password.")
         }

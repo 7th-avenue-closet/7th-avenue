@@ -4,7 +4,6 @@ import com.example.backoffice.domain.product.model.Product
 import com.example.backoffice.domain.user.model.User
 import jakarta.persistence.*
 import java.io.InvalidObjectException
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -19,7 +18,7 @@ class Review(
 
     @Column(name = "updated_at") var updatedAt: ZonedDateTime,
 
-    @Column(name = "is_deleted") var isDeleted: Boolean = false,
+    @Column(name = "deleted_at") var deletedAt: ZonedDateTime? = null,
 
     @ManyToOne val user: User,
 
@@ -47,16 +46,19 @@ class Review(
                 product = product,
                 createdAt = timestamp,
                 updatedAt = timestamp,
-                isDeleted = false
             )
         }
     }
 
     fun updateReview(
-        comment: String, rating: String
+        comment: String, rating: String,
     ) {
         checkCommentLength(comment)
         this.comment = comment
         this.rating = Rating.fromString(rating)
+    }
+
+    fun softDelete() {
+        this.deletedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
     }
 }
