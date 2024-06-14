@@ -14,7 +14,6 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
 
     private val product = QProduct.product
 
-
     override fun findByPageableAndDeleted(
         pageSize: Long,
         sorted: String?,
@@ -23,16 +22,17 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
         name: String?,
         onDiscount: Boolean?
     ): List<Product> {
+        val cursored = product.id.max().toString().toLong() - cursor
+
         val builder = BooleanBuilder()
         builder.and(product.deletedAt.isNull())
         builder.and(product.stock.gt(0))
         category?.let { builder.and(product.category.eq(it)) }
         name?.let { builder.and(product.name.contains(it)) }
 
-        if (sorted != "id.asc") cursor.let { builder.and(product.id.gt(it)) }
-        else cursor.let { builder.and(product.id.lt(it)) }
+        if (sorted != "id.asc") cursored.let { builder.and(product.id.gt(it)) }
+        else cursored.let { builder.and(product.id.lt(it)) }
         if (onDiscount == true) builder.and(product.status.eq(Status.ON_DISCOUNT))
-
 
         val sort = getOrderSpecifier(sorted)
 
@@ -41,7 +41,6 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
             .orderBy(sort)
             .limit(pageSize)
             .fetch()
-
         return contents
     }
 
