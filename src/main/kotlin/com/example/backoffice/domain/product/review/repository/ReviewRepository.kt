@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface ReviewRepository: JpaRepository<Review, Long> {
     fun findByIdAndDeletedAtIsNull(id: Long): Review?
-    fun findAByDeletedAtIsNull(): List<Review>
+    fun findByDeletedAtIsNull(): List<Review>
+    fun findByUserIdAndDeletedAtIsNull(userId: Long): List<Review>
 }

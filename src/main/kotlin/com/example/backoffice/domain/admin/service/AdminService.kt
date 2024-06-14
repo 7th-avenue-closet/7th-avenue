@@ -1,6 +1,6 @@
 package com.example.backoffice.domain.admin.service
 
-import com.example.backoffice.common.exception.AlreadyDeletedException
+import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.admin.dto.AdminSignUpRequest
 import com.example.backoffice.domain.admin.dto.AdminSignUpResponse
 import com.example.backoffice.domain.admin.model.Admin
@@ -42,8 +42,12 @@ class AdminService(
         return LoginResponse(accessToken = jwtHelper.generateToken(admin.id!!, MemberRole.ADMIN))
     }
 
-    fun getAllReviews(): List<ReviewResponse> {
-        return reviewRepository.findAByDeletedAtIsNull().map { it.toResponse() }
+    fun getReviews(userId: Long?): List<ReviewResponse> {
+        return if (userId != null) {
+            reviewRepository.findByUserIdAndDeletedAtIsNull(userId).map { it.toResponse() }
+        } else {
+            reviewRepository.findByDeletedAtIsNull().map { it.toResponse() }
+        }
     }
 
     @Transactional
@@ -53,7 +57,7 @@ class AdminService(
 
         reviews.forEach {
             if (it.deletedAt != null) {
-                throw AlreadyDeletedException("Review", it.id!!)
+                throw ModelNotFoundException("Review", it.id!!)
             }
             it.deletedAt = now
         }

@@ -24,8 +24,8 @@ class AdminController(private val adminService: AdminService) {
     }
 
     @GetMapping("/reviews")
-    fun getAllReviews(): ResponseEntity<List<ReviewResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllReviews())
+    fun getReviews(@RequestParam userId: Long?): ResponseEntity<List<ReviewResponse>> {
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getReviews(userId))
     }
 
     @DeleteMapping("/reviews")
