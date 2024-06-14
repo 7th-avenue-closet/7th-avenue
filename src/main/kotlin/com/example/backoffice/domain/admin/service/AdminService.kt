@@ -13,6 +13,8 @@ import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtHelper
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.time.ZonedDateTime
 
 @Service
 class AdminService(
@@ -41,5 +43,12 @@ class AdminService(
 
     fun getAllReviews(): List<ReviewResponse> {
         return reviewRepository.findAByDeletedAtIsNull().map { it.toResponse() }
+    }
+
+    @Transactional
+    fun deleteReviews(reviewIds: List<Long>) {
+        val reviews = reviewRepository.findAllById(reviewIds)
+        reviews.forEach { it.deletedAt = ZonedDateTime.now() }
+        reviewRepository.saveAll(reviews)
     }
 }
