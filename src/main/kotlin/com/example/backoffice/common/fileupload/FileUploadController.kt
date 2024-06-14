@@ -16,8 +16,9 @@ class FileUploadController(
             .body(service.presignedUrl(domain, fileName))
     }
 
-    @DeleteMapping("/presigned")
+    @DeleteMapping("/delete-image")
     fun deleteImage(@RequestParam domain: String, @RequestParam fileName: String): ResponseEntity<Unit> {
         return ResponseEntity.status(HttpStatus.OK).body(service.delete(domain, fileName))
     }
+
 }

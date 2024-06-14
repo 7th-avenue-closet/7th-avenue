@@ -27,9 +27,13 @@ class ImageUploadService(
     }
 
     fun delete(domain: String, fileName: String) {
-        val delete = DeleteObjectRequest(bucket, "$domain/$fileName")
-        s3Client.deleteObject(delete)
+        val toDelete = DeleteObjectRequest(bucket, "$domain/$fileName")
+        s3Client.deleteObject(toDelete)
     }
 
+    fun delete(images: String) {
+        val toDelete = DeleteObjectRequest(bucket, images.substringAfter("amazonaws.com/"))
+        s3Client.deleteObject(toDelete)
+    }
 
 }
