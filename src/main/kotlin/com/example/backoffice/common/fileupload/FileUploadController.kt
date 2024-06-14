@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class TestController(
+class FileUploadController(
     private val service: ImageUploadService
 ) {
 
