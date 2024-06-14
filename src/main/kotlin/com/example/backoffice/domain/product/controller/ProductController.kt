@@ -20,7 +20,10 @@ class ProductController(
 
     @GetMapping
     fun getProducts(
-        @RequestParam pageSize: Long, @RequestParam sorted: String?, @RequestParam cursor: Long?, category: Category?
+        @RequestParam pageSize: Long = 10,
+        @RequestParam sorted: String?,
+        @RequestParam cursor: Long = 10,
+        @RequestParam category: Category?
     ): ResponseEntity<List<ProductResponseDto>> {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts(pageSize, sorted, cursor, category))
     }
