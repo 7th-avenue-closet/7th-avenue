@@ -25,10 +25,12 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
     ): List<Product> {
         val builder = BooleanBuilder()
         builder.and(product.deletedAt.isNull())
-        cursor.let { builder.and(product.id.gt(it)) }
+        builder.and(product.stock.gt(0))
         category?.let { builder.and(product.category.eq(it)) }
         name?.let { builder.and(product.name.contains(it)) }
-        builder.and(product.stock.gt(0))
+
+        if (sorted != "id.asc") cursor.let { builder.and(product.id.gt(it)) }
+        else cursor.let { builder.and(product.id.lt(it)) }
         if (onDiscount == true) builder.and(product.status.eq(Status.ON_DISCOUNT))
 
 
