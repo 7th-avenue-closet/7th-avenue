@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/products")
 class ProductController(
-    private val productService: ProductService
+    private val productService: ProductService,
 ) {
 
     @GetMapping
@@ -23,14 +23,14 @@ class ProductController(
     }
 
     @PostMapping
-    fun createProduct(@RequestBody request: CreateProductRequestDto): ResponseEntity<Unit> {
+    fun createProduct(@RequestBody request: CreateProductRequestDto): ResponseEntity<IdResponseDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(request))
     }
 
     @PutMapping("/{productId}")
     fun updateProduct(
         @PathVariable("productId") productId: Long,
-        @RequestBody request: UpdateProductRequestDto
+        @RequestBody request: UpdateProductRequestDto,
     ): ResponseEntity<IdResponseDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.updateProduct(productId, request))
     }
