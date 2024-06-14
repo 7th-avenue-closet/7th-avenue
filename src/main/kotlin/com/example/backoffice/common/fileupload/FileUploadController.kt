@@ -10,10 +10,14 @@ class FileUploadController(
 ) {
 
     @GetMapping("/presigned")
-    fun presignedUrl(@RequestParam fileName: String, @RequestParam domain: String): ResponseEntity<String> {
+    fun presignedUrl(@RequestParam domain: String, @RequestParam fileName: String): ResponseEntity<String> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(service.presignedUrl(domain, fileName))
     }
 
+    @DeleteMapping("/presigned")
+    fun deleteImage(@RequestParam domain: String, @RequestParam fileName: String): ResponseEntity<Unit> {
+        return ResponseEntity.status(HttpStatus.OK).body(service.delete(domain, fileName))
+    }
 }

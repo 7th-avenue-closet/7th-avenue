@@ -1,6 +1,7 @@
 package com.example.backoffice.common.fileupload
 
 import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.DeleteObjectRequest
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import org.springframework.beans.factory.annotation.Value
@@ -23,6 +24,11 @@ class ImageUploadService(
             .withMethod(com.amazonaws.HttpMethod.PUT)
             .withExpiration(expiration)
         return s3Client.generatePresignedUrl(url).toString()
+    }
+
+    fun delete(domain: String, fileName: String) {
+        val delete = DeleteObjectRequest(bucket, "$domain/$fileName")
+        s3Client.deleteObject(delete)
     }
 
 
