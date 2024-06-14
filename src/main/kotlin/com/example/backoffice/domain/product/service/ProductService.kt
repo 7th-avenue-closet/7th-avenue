@@ -12,9 +12,15 @@ import org.springframework.transaction.annotation.Transactional
 class ProductService(
     private val productRepository: ProductRepository,
 ) {
-    fun getProducts(pageSize: Long, sorted: String?, cursor: Long?, category: Category?): List<ProductResponseDto> {
-        return productRepository.findByPageableAndDeleted(pageSize, sorted, cursor, category).map { it.toResponse() }
-//        return productRepository.findAllByDeletedAtIsNull().map { it.toResponse() }
+    fun getProducts(
+        pageSize: Long,
+        sorted: String?,
+        cursor: Long,
+        category: Category?,
+        name: String?
+    ): List<ProductResponseDto> {
+        return productRepository.findByPageableAndDeleted(pageSize, sorted, cursor, category, name)
+            .map { it.toResponse() }
     }
 
     fun getProductById(productId: Long): ProductDetailResponseDto {
