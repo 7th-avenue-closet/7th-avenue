@@ -4,6 +4,9 @@ import com.example.backoffice.domain.admin.dto.AdminSignUpRequest
 import com.example.backoffice.domain.admin.dto.AdminSignUpResponse
 import com.example.backoffice.domain.admin.model.Admin
 import com.example.backoffice.domain.admin.repository.AdminRepository
+import com.example.backoffice.domain.product.review.dto.ReviewResponse
+import com.example.backoffice.domain.product.review.dto.toResponse
+import com.example.backoffice.domain.product.review.repository.ReviewRepository
 import com.example.backoffice.domain.user.dto.LoginRequest
 import com.example.backoffice.domain.user.dto.LoginResponse
 import com.example.backoffice.infra.security.MemberRole
@@ -16,6 +19,7 @@ class AdminService(
     private val adminRepository: AdminRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtHelper: JwtHelper,
+    private val reviewRepository: ReviewRepository,
 ) {
     fun createAdmin(request: AdminSignUpRequest): AdminSignUpResponse {
         val (accountId, password) = request
@@ -33,5 +37,9 @@ class AdminService(
             ?: throw IllegalArgumentException("Invalid Credential.")
 
         return LoginResponse(accessToken = jwtHelper.generateToken(admin.id!!, MemberRole.ADMIN))
+    }
+
+    fun getAllReviews(): List<ReviewResponse> {
+        return reviewRepository.findAllByIsDeletedFalse().map { it.toResponse() }
     }
 }
