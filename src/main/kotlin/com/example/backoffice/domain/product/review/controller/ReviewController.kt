@@ -42,9 +42,9 @@ class ReviewController(
         @AuthenticationPrincipal principal: MemberPrincipal,
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,
-    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
-        reviewService.deleteReview(principal.id, productId, reviewId)
-        ResponseEntity
+    ): ResponseEntity<Unit> {
+        reviewService.deleteReview(principal, productId, reviewId)
+        return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
             .build()
     }
