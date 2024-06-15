@@ -7,4 +7,5 @@ interface ReviewRepository: JpaRepository<Review, Long> {
     fun findByIdAndDeletedAtIsNull(id: Long): Review?
     fun findByDeletedAtIsNull(): List<Review>
     fun findByUserIdAndDeletedAtIsNull(userId: Long): List<Review>
+    fun findByIdInAndDeletedAtIsNull(ids: List<Long>): List<Review>
 }

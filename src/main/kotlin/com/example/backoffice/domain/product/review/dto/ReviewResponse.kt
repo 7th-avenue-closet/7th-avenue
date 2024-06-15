@@ -12,8 +12,8 @@ data class ReviewResponse(
     val createdAt: ZonedDateTime,
     val updatedAt: ZonedDateTime,
     val deletedAt: ZonedDateTime?,
-    val productId : Long
-    // val user: UserResponse
+    val productId : Long,
+    val userId: Long
 )
 fun Review.toResponse(): ReviewResponse {
     return ReviewResponse(
@@ -23,6 +23,7 @@ fun Review.toResponse(): ReviewResponse {
         createdAt = createdAt,
         updatedAt = updatedAt,
         deletedAt = deletedAt,
-        productId = product.toResponse().id
+        productId = product.id!!,
+        userId = user.id!!
     )
 }
