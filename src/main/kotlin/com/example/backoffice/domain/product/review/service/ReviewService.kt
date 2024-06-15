@@ -24,11 +24,11 @@ class ReviewService(
             "Product",
             productId
         )
-        val (comment, rating) = request
+        val (comment, rating, imageUrl) = request
         val reviewer = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
         val review = Review.of(
-            comment = comment, rating = Rating.fromString(rating), user = reviewer, product = product
+            comment = comment, rating = Rating.fromString(rating), imageUrl = imageUrl, user = reviewer, product = product
         )
         reviewRepository.save(review)
     }
@@ -44,10 +44,10 @@ class ReviewService(
 
         if (review.user.id != userId) throw AccessDeniedException("You do not have permission to modify.")
 
-        val (comment, rating) = request
+        val (comment, rating, imageUrl) = request
 
         review.updateReview(
-            comment = comment, rating = rating
+            comment = comment, rating = rating, imageUrl = imageUrl
         )
     }
 
