@@ -43,16 +43,12 @@ class AdminService(
     }
 
     fun getReviews(userId: Long?): List<ReviewResponse> {
-        return if (userId != null) {
-            reviewRepository.findByUserIdAndDeletedAtIsNull(userId).map { it.toResponse() }
-        } else {
-            reviewRepository.findByDeletedAtIsNull().map { it.toResponse() }
-        }
+        return reviewRepository.getReviews(userId).map { it.toResponse() }
     }
 
     @Transactional
     fun deleteReviews(reviewIds: List<Long>) {
-        val reviews = reviewRepository.findByIdInAndDeletedAtIsNull (reviewIds)
+        val reviews = reviewRepository.findByIdInAndDeletedAtIsNull(reviewIds)
         reviews.forEach { it.softDelete() }
     }
 }

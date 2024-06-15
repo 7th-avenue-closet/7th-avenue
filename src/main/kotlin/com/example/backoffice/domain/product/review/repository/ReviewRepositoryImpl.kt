@@ -16,7 +16,6 @@ class ReviewRepositoryImpl: CustomReviewRepository, QueryDslSupport() {
         if (userId != null) {
             getReviewQuery.where(review.user.id.eq(userId))
         }
-
         return getReviewQuery.fetch()
     }
 }
