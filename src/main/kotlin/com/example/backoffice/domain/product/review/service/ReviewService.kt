@@ -8,7 +8,9 @@ import com.example.backoffice.domain.product.review.model.Rating
 import com.example.backoffice.domain.product.review.model.Review
 import com.example.backoffice.domain.product.review.repository.ReviewRepository
 import com.example.backoffice.domain.user.repository.UserRepository
+import com.example.backoffice.infra.security.MemberPrincipal
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,11 +26,11 @@ class ReviewService(
             "Product",
             productId
         )
-        val (comment, rating) = request
+        val (comment, rating, imageUrl) = request
         val reviewer = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
         val review = Review.of(
-            comment = comment, rating = Rating.fromString(rating), user = reviewer, product = product
+            comment = comment, rating = Rating.fromString(rating), imageUrl = imageUrl, user = reviewer, product = product
         )
         reviewRepository.save(review)
     }
@@ -44,15 +46,15 @@ class ReviewService(
 
         if (review.user.id != userId) throw AccessDeniedException("You do not have permission to modify.")
 
-        val (comment, rating) = request
+        val (comment, rating, imageUrl) = request
 
         review.updateReview(
-            comment = comment, rating = rating
+            comment = comment, rating = rating, imageUrl = imageUrl
         )
     }
 
     @Transactional
-    fun deleteReview(userId: Long, productId: Long, reviewId: Long) {
+    fun deleteReview(principal: MemberPrincipal, productId: Long, reviewId: Long) {
         if (!productRepository.existsByIdAndDeletedAtIsNull(productId)) throw ModelNotFoundException(
             "Product",
             productId
@@ -60,8 +62,9 @@ class ReviewService(
         val review =
             reviewRepository.findByIdAndDeletedAtIsNull(reviewId) ?: throw ModelNotFoundException("Review", reviewId)
 
-        if (review.user.id != userId) throw AccessDeniedException("You do not have permission to delete.")
-
+        if (review.user.id != principal.id && !principal.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) throw AccessDeniedException(
+            "You do not have permission to delete."
+        )
         review.softDelete()
     }
 }

@@ -14,6 +14,8 @@ class Review(
 
     @Enumerated(EnumType.STRING) @Column(name = "rating") var rating: Rating,
 
+    @Column(name = "image_url") var imageUrl: String?,
+
     @Column(name = "created_at") val createdAt: ZonedDateTime,
 
     @Column(name = "updated_at") var updatedAt: ZonedDateTime,
@@ -36,12 +38,13 @@ class Review(
             }
         }
 
-        fun of(comment: String, rating: Rating, user: User, product: Product): Review {
+        fun of(comment: String, rating: Rating, imageUrl: String?, user: User, product: Product): Review {
             checkCommentLength(comment)
             val timestamp = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
             return Review(
                 comment = comment,
                 rating = rating,
+                imageUrl = imageUrl,
                 user = user,
                 product = product,
                 createdAt = timestamp,
@@ -51,11 +54,12 @@ class Review(
     }
 
     fun updateReview(
-        comment: String, rating: String,
+        comment: String, rating: String, imageUrl: String?
     ) {
         checkCommentLength(comment)
         this.comment = comment
         this.rating = Rating.fromString(rating)
+        this.imageUrl = imageUrl
     }
 
     fun softDelete() {

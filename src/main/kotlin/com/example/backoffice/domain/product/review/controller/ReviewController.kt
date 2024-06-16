@@ -32,7 +32,7 @@ class ReviewController(
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,
         @RequestBody reviewRequest: ReviewRequest,
-    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
+    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER, MemberRole.ADMIN)) {
         reviewService.updateReview(principal.id, productId, reviewId, reviewRequest)
         ResponseEntity.status(HttpStatus.OK).build()
     }
@@ -42,10 +42,8 @@ class ReviewController(
         @AuthenticationPrincipal principal: MemberPrincipal,
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,
-    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
-        reviewService.deleteReview(principal.id, productId, reviewId)
-        ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .build()
+    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER, MemberRole.ADMIN)) {
+        reviewService.deleteReview(principal, productId, reviewId)
+        ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
