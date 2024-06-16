@@ -7,9 +7,5 @@ import com.example.backoffice.domain.user.model.User
 import org.springframework.stereotype.Repository
 
 interface IOrderRepository {
-    fun findUser(userId: Long): User
     fun save(order: Order)
-    fun findProductsByIds(ids: List<Long>): List<Product>
-    fun saveOrderProducts(orderProducts: List<OrderProduct>)
-    //fun find()
 }

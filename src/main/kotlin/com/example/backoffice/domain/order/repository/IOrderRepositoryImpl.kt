@@ -11,25 +11,11 @@ import org.springframework.stereotype.Service
 @Service
 class IOrderRepositoryImpl(
     private val orderRepository: OrderRepository,
-    private val orderProductRepository: OrderProductRepository,
-    private val productRepository: ProductRepository,
-    private val userRepository: UserRepository
+    private val orderProductRepository: OrderProductRepository
 ) : IOrderRepository {
-
-    override fun findUser(userId: Long): User {
-        return userRepository.findById(userId).orElseThrow()
-    }
 
     override fun save(order: Order) {
         orderRepository.save(order)
-    }
-
-    override fun findProductsByIds(ids: List<Long>): List<Product> {
-        return productRepository.findByIds(ids)
-    }
-
-    override fun saveOrderProducts(orderProducts: List<OrderProduct>) {
-        orderProductRepository.saveAll(orderProducts)
     }
 
 }

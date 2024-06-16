@@ -10,6 +10,7 @@ interface ProductRepository : JpaRepository<Product, Long> {
     fun findByIdAndDeletedAtIsNull(id: Long): Product?
     fun existsByIdAndDeletedAtIsNull(id: Long): Boolean
 
-    @Query("SELECT p FROM Product p WHERE p.id IN :ids")
+
+    @Query("SELECT p FROM Product p WHERE p.id IN :ids AND p.deletedAt IS NULL AND p.status <> 'SOLD_OUT'")
     fun findByIds(@Param("ids") ids: List<Long>): List<Product>
 }

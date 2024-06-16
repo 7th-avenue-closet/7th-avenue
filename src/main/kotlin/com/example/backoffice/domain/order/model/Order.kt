@@ -10,11 +10,14 @@ import java.time.ZonedDateTime
 @Table(name = "app_order")
 class Order(
     val totalPrice: Long,
-    val status: String,
+    @Enumerated(EnumType.STRING)
+    val status: OrderStatus,
     val createdAt: ZonedDateTime,
     var updatedAt: ZonedDateTime,
     @ManyToOne
-    val user: User
+    val user: User,
+    @OneToMany(fetch = FetchType.LAZY)
+    val orderProducts: List<OrderProduct>
 ) {
 
     @Id
@@ -26,13 +29,14 @@ class Order(
             return
         }
 
-        fun of(totalPrice: Long, status: String, user: User): Order {
+        fun of(totalPrice: Long, status: OrderStatus, user: User, orderProducts: List<OrderProduct>): Order {
             validateOrder()
             val timestamp = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
             return Order(
                 totalPrice = totalPrice,
                 status = status,
                 user = user,
+                orderProducts = orderProducts,
                 createdAt = timestamp,
                 updatedAt = timestamp
             )
