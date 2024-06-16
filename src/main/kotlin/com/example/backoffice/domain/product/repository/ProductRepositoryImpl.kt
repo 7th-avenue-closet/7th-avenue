@@ -22,7 +22,6 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
         name: String?,
         onDiscount: Boolean?
     ): List<Product> {
-        val cursored = product.id.max().toString().toLong() - cursor
 
         val builder = BooleanBuilder()
         builder.and(product.deletedAt.isNull())
@@ -30,8 +29,8 @@ class ProductRepositoryImpl : QueryDslSupport(), CustomProductRepository {
         category?.let { builder.and(product.category.eq(it)) }
         name?.let { builder.and(product.name.contains(it)) }
 
-        if (sorted != "id.asc") cursored.let { builder.and(product.id.gt(it)) }
-        else cursored.let { builder.and(product.id.lt(it)) }
+        if (sorted != "id.asc") cursor.let { builder.and(product.id.gt(it)) }
+        else cursor.let { builder.and(product.id.lt(it)) }
         if (onDiscount == true) builder.and(product.status.eq(Status.ON_DISCOUNT))
 
         val sort = getOrderSpecifier(sorted)

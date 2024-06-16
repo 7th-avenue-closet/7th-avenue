@@ -22,7 +22,7 @@ class ProductController(
     fun getProducts(
         @RequestParam pageSize: Long = 10,
         @RequestParam sorted: String = "id.desc",
-        @RequestParam cursor: Long = 10,
+        @RequestParam cursor: Long,
         @RequestParam category: Category?,
         @RequestParam name: String?,
         @RequestParam onDiscount: Boolean?
