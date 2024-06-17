@@ -36,7 +36,7 @@ class User(
             accountId: String,
             name: String,
             password: String,
-            imageUrl: String?,
+            imageUrl: String? = null,
         ): User {
             checkAccountId(accountId)
             return User(
