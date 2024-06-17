@@ -4,9 +4,9 @@ import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.user.dto.*
 import com.example.backoffice.domain.user.model.User
 import com.example.backoffice.domain.user.repository.UserRepository
+import com.example.backoffice.infra.redis.RedisTokenRepository
 import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtHelper
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +17,7 @@ class UserService(
     private val jwtHelper: JwtHelper,
     private val passwordEncoder: PasswordEncoder,
     private val passwordHistoryService: PasswordHistoryService,
+    private val redisTokenRepository: RedisTokenRepository,
 ) {
     @Transactional
     fun signUp(request: SignUpRequest): SignUpResponse {
@@ -60,6 +61,14 @@ class UserService(
 
         user.updatePassword(newPassword = passwordEncoder.encode(newPassword))
         passwordHistoryService.updatePasswordHistory(user)
+    }
+
+    fun logout(token: String) {
+        redisTokenRepository.blacklistToken(token)
+    }
+
+    fun isLoggedOut(token: String): Boolean {
+        return redisTokenRepository.isTokenBlacklisted(token)
     }
 
     private fun checkPasswordRule(password: String) {

@@ -8,10 +8,7 @@ import com.example.backoffice.infra.security.MemberRole
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
@@ -24,6 +21,14 @@ class UserController(private val userService: UserService, private val preAuthor
     @PostMapping("/auth/login")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.login(loginRequest))
+    }
+
+    @PostMapping("/auth/logout")
+    fun logout(
+        @RequestHeader("Authorization") token: String,
+        @AuthenticationPrincipal principal: MemberPrincipal,
+    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
+        ResponseEntity.status(HttpStatus.CREATED).body(userService.logout(token.substring("Bearer ".length)))
     }
 
     @PatchMapping("/auth/change-password")
