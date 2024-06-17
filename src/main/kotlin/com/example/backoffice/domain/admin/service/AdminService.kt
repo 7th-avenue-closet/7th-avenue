@@ -22,6 +22,7 @@ class AdminService(
     private val adminRepository: AdminRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtHelper: JwtHelper,
+    private val reviewRepository: ReviewRepository,
     private val userRepository: UserRepository,
 ) {
     fun createAdmin(request: AdminSignUpRequest): AdminSignUpResponse {
@@ -43,7 +44,7 @@ class AdminService(
     }
 
     @Transactional
-    fun deleteUser(userId: Long) {
+    fun suspendUser(userId: Long) {
         val user =
             userRepository.findByIdAndDeletedAtIsNull(userId) ?: throw ModelNotFoundException("User", userId)
 

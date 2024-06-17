@@ -31,11 +31,11 @@ class AdminController(
     }
 
     @DeleteMapping("/users/{userId}")
-    fun deleteUser(
+    fun suspendUser(
         @AuthenticationPrincipal principal: MemberPrincipal,
         @PathVariable userId: Long
     ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        adminService.deleteUser(userId)
+        adminService.suspendUser(userId)
         ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
