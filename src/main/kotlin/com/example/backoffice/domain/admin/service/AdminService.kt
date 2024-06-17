@@ -43,16 +43,6 @@ class AdminService(
         return LoginResponse(accessToken = jwtHelper.generateToken(admin.id!!, MemberRole.ADMIN))
     }
 
-    fun getReviews(userId: Long?): List<ReviewResponse> {
-        return reviewRepository.getReviews(userId).map { it.toResponse() }
-    }
-
-    @Transactional
-    fun deleteReviews(reviewIds: List<Long>) {
-        val reviews = reviewRepository.findByIdInAndDeletedAtIsNull(reviewIds)
-        reviews.forEach { it.softDelete() }
-    }
-
     @Transactional
     fun suspendUser(userId: Long) {
         val user =
