@@ -5,12 +5,15 @@ import com.example.backoffice.domain.product.dto.*
 import com.example.backoffice.domain.product.model.Category
 import com.example.backoffice.domain.product.model.Product
 import com.example.backoffice.domain.product.repository.ProductRepository
+import com.example.backoffice.domain.product.review.dto.toResponse
+import com.example.backoffice.domain.product.review.repository.ReviewRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
+    private val reviewRepository: ReviewRepository
 ) {
     fun getProducts(
         pageSize: Long,
@@ -24,12 +27,18 @@ class ProductService(
             .map { it.toResponse() }
     }
 
-    fun getProductById(productId: Long): ProductDetailResponseDto {
+    fun getProductById(productId: Long, cursor: Long): ProductDetailResponseDto {
         val product = productRepository.findByIdAndDeletedAtIsNull(productId) ?: throw ModelNotFoundException(
             "Product",
             productId
         )
-        return product.toDetailResponse()
+        val reviews = reviewRepository.getReviews(cursor, productId) ?: throw ModelNotFoundException(
+            "review",
+            productId
+        )
+
+        return ProductDetailResponseDto(product.toResponse(), reviews.map { it.toResponse() }
+        )
     }
 
     @Transactional
