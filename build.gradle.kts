@@ -20,6 +20,8 @@ repositories {
     mavenCentral()
 }
 
+val kotestVersion = "5.7.2"
+val mockkVersion = "1.13.9"
 val queryDslVersion = "5.0.0"
 val kotestVersion = "5.5.5"
 val mockkVersion = "1.13.8"
@@ -48,9 +50,9 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
     testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("org.postgresql:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
 }
 
 kotlin {
