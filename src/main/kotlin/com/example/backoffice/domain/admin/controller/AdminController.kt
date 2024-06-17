@@ -6,7 +6,6 @@ import com.example.backoffice.domain.admin.service.AdminService
 import com.example.backoffice.domain.product.review.dto.ReviewResponse
 import com.example.backoffice.domain.user.dto.LoginRequest
 import com.example.backoffice.domain.user.dto.LoginResponse
-import com.example.backoffice.domain.user.service.UserService
 import com.example.backoffice.infra.security.CustomPreAuthorize
 import com.example.backoffice.infra.security.MemberPrincipal
 import com.example.backoffice.infra.security.MemberRole
@@ -50,11 +49,11 @@ class AdminController(
     }
 
     @DeleteMapping("/users/{userId}")
-    fun deleteUser(
+    fun suspendUser(
         @AuthenticationPrincipal principal: MemberPrincipal,
         @PathVariable userId: Long
     ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        adminService.deleteUser(userId)
+        adminService.suspendUser(userId)
         ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }

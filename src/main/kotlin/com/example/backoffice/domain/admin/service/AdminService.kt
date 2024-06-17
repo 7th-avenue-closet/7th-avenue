@@ -54,7 +54,7 @@ class AdminService(
     }
 
     @Transactional
-    fun deleteUser(userId: Long) {
+    fun suspendUser(userId: Long) {
         val user =
             userRepository.findByIdAndDeletedAtIsNull(userId) ?: throw ModelNotFoundException("User", userId)
 
