@@ -1,9 +1,6 @@
 package com.example.backoffice.domain.order.service
 
-import com.example.backoffice.common.exception.ModelNotFoundException
-import com.example.backoffice.domain.order.dto.OrderDetailsResponse
-import com.example.backoffice.domain.order.dto.OrderProductResponse
-import com.example.backoffice.domain.order.dto.OrderRequest
+import com.example.backoffice.domain.order.dto.*
 import com.example.backoffice.domain.order.model.Order
 import com.example.backoffice.domain.order.model.OrderProduct
 import com.example.backoffice.domain.order.model.OrderStatus
@@ -52,24 +49,14 @@ class OrderService(
 
     fun getOrderDetails(userId: Long, orderId: Long): OrderDetailsResponse {
         val order = iOrderRepository.findById(orderId).orElseThrow()
-        val orderProducts = mutableListOf<OrderProductResponse>()
-        order.orderProducts.forEach() {
-            orderProducts.add(
-                OrderProductResponse(
-                    it.product.id!!,
-                    it.quantity,
-                    it.price
-                )
-            )
-        }
-        return OrderDetailsResponse(
-            id = order.id!!,
-            totalPrice = order.totalPrice,
-            createdAt = order.createdAt,
-            userId = order.user.id!!,
-            status = order.status,
-            orderProducts = orderProducts
-        )
+        return order.toDetailResponse()
+    }
+
+    fun getOrders(userId: Long): OrdersResponse {
+        val orders = iOrderRepository.findAllByUserId(userId)
+        return OrdersResponse(orders.map {
+            it.toOverviewResponse()
+        })
     }
 
 
@@ -93,6 +80,5 @@ class OrderService(
             }
         }
     }
-
 
 }

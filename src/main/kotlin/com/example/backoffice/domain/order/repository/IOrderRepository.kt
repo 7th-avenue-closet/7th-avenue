@@ -10,4 +10,5 @@ import java.util.*
 interface IOrderRepository {
     fun save(order: Order)
     fun findById(orderId: Long): Optional<Order>
+    fun findAllByUserId(userId: Long): List<Order>
 }

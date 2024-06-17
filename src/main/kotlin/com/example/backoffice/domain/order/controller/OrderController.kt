@@ -2,6 +2,7 @@ package com.example.backoffice.domain.order.controller
 
 import com.example.backoffice.domain.order.dto.OrderDetailsResponse
 import com.example.backoffice.domain.order.dto.OrderRequest
+import com.example.backoffice.domain.order.dto.OrdersResponse
 import com.example.backoffice.domain.order.service.OrderService
 import com.example.backoffice.infra.security.MemberPrincipal
 import org.springframework.http.HttpStatus
@@ -39,4 +40,15 @@ class OrderController(
             orderService.getOrderDetails(principal.id, orderId)
         )
     }
+
+    @GetMapping("")
+    fun getOrders(
+        @AuthenticationPrincipal principal: MemberPrincipal
+    ): ResponseEntity<OrdersResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            orderService.getOrders(principal.id)
+        )
+    }
+
+
 }
