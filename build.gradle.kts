@@ -21,6 +21,7 @@ repositories {
 }
 
 val queryDslVersion = "5.0.0"
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -28,13 +29,11 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
     implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
-
-    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 
