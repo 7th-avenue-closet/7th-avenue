@@ -1,6 +1,7 @@
 package com.example.backoffice.domain.order.service
 
 import com.example.backoffice.domain.order.dto.*
+
 import com.example.backoffice.domain.order.model.Order
 import com.example.backoffice.domain.order.model.OrderProduct
 import com.example.backoffice.domain.order.model.OrderStatus
@@ -21,6 +22,7 @@ class OrderService(
 ) {
     @Transactional
     fun placeOrder(userId: Long, orderRequests: List<OrderRequest>): Long? {
+
         val ids = orderRequests.map {
             it.productId
         }
@@ -44,6 +46,7 @@ class OrderService(
             val product = productMap[it.productId]!!
             product.stock -= it.quantity
         }
+
         return order.id
     }
 
@@ -75,6 +78,7 @@ class OrderService(
     }
     
     private fun calculateTotalPriceFromProducts(
+
         productMap: Map<Long?, Product>,
         orderRequests: List<OrderRequest>
     ): List<Long> {
@@ -87,6 +91,7 @@ class OrderService(
     }
 
     private fun checkOrderStock(productMap: Map<Long?, Product>, orderRequests: List<OrderRequest>) {
+
         orderRequests.forEach {
             val product = productMap[it.productId]!!
             if (it.quantity > product.stock) {
