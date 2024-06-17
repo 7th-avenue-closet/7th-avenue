@@ -1,6 +1,7 @@
 package com.example.backoffice.domain.product.controller
 
-import com.example.backoffice.domain.product.dto.*
+import com.example.backoffice.domain.product.dto.ProductDetailResponseDto
+import com.example.backoffice.domain.product.dto.ProductResponseDto
 import com.example.backoffice.domain.product.model.Category
 import com.example.backoffice.domain.product.service.ProductService
 import org.springframework.http.HttpStatus
@@ -35,7 +36,7 @@ class ProductController(
     @GetMapping("/{productId}")
     fun getProduct(
         @PathVariable("productId") productId: Long,
-        @RequestParam cursor: Long
+        @RequestParam cursor: Long?,
     ): ResponseEntity<ProductDetailResponseDto> {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(productId, cursor))
     }
