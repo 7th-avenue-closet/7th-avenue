@@ -32,14 +32,17 @@ class ProductController(
             "name" -> cursor
             else -> throw IllegalArgumentException("Invalid sorted field")
         }
-        
+
         return ResponseEntity.status(HttpStatus.OK)
             .body(productService.getProducts(pageSize, sorted, cursorValue, category, name, onDiscount))
     }
 
     @GetMapping("/{productId}")
-    fun getProduct(@PathVariable("productId") productId: Long): ResponseEntity<ProductDetailResponseDto> {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(productId))
+    fun getProduct(
+        @PathVariable("productId") productId: Long,
+        @RequestParam cursor: Long
+    ): ResponseEntity<ProductDetailResponseDto> {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(productId, cursor))
     }
 
     @PostMapping
