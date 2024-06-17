@@ -37,19 +37,7 @@ class ProductService(
             productId
         )
 
-        return ProductDetailResponseDto(
-            id = product.id!!,
-            name = product.name,
-            price = product.price,
-            description = product.description,
-            category = product.category,
-            stock = product.stock,
-            status = product.status,
-            discountRate = product.discountRate,
-            imageUrl = product.imageUrl,
-            createdAt = product.createdAt,
-            updatedAt = product.updatedAt,
-            review = reviews.map { it.toResponse() }
+        return ProductDetailResponseDto(product.toResponse(), reviews.map { it.toResponse() }
         )
     }
 
