@@ -11,7 +11,7 @@ import java.time.ZonedDateTime
 class Order(
     val totalPrice: Long,
     @Enumerated(EnumType.STRING)
-    val status: OrderStatus,
+    var status: OrderStatus,
     val createdAt: ZonedDateTime,
     var updatedAt: ZonedDateTime,
     @ManyToOne

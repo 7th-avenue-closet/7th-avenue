@@ -59,7 +59,21 @@ class OrderService(
         })
     }
 
-
+    @Transactional
+    fun cancelOrder(userId: Long, orderId: Long) {
+        val order = iOrderRepository.findById(orderId).orElseThrow()
+        if (userId != order.user.id) {
+            throw IllegalArgumentException("Invalid cancellation request")
+        }
+        if (order.status != OrderStatus.PLACED) {
+            throw IllegalStateException("Your order cannot be canceled")
+        }
+        order.status = OrderStatus.CANCELLED
+        order.orderProducts.forEach {
+            it.product.stock += it.quantity
+        }
+    }
+    
     private fun calculateTotalPriceFromProducts(
         productMap: Map<Long?, Product>,
         orderRequests: List<OrderRequest>
