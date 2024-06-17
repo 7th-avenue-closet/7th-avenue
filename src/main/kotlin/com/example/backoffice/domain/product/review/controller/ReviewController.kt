@@ -23,7 +23,7 @@ class ReviewController(
         @RequestBody reviewRequest: ReviewRequest,
     ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
         reviewService.createReview(principal.id, productId, reviewRequest)
-        ResponseEntity.status(HttpStatus.OK).build()
+        ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PutMapping("/{reviewId}")
