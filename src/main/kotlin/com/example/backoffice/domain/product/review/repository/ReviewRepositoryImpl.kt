@@ -14,7 +14,12 @@ class ReviewRepositoryImpl : CustomReviewRepository, QueryDslSupport() {
         val getReviewQuery = queryFactory.selectFrom(review)
             .where(review.deletedAt.isNull)
 
-        userId?.let { getReviewQuery.where(review.user.id.eq(it)) }
+        userId?.let {
+            getReviewQuery.where(
+                review.user.id.eq(it)
+                    .and(review.user.deletedAt.isNull)
+            )
+        }
         return getReviewQuery.fetch()
     }
 

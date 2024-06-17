@@ -1,6 +1,7 @@
 package com.example.backoffice.domain.order.service
 
 import com.example.backoffice.domain.order.dto.*
+
 import com.example.backoffice.domain.order.model.Order
 import com.example.backoffice.domain.order.model.OrderProduct
 import com.example.backoffice.domain.order.model.OrderStatus
@@ -21,6 +22,7 @@ class OrderService(
 ) {
     @Transactional
     fun placeOrder(userId: Long, orderRequests: List<OrderRequest>): Long? {
+
         val ids = orderRequests.map {
             it.productId
         }
@@ -44,12 +46,15 @@ class OrderService(
             val product = productMap[it.productId]!!
             product.stock -= it.quantity
         }
+
         return order.id
     }
 
     fun getOrderDetails(userId: Long, orderId: Long): OrderDetailsResponse {
         val order = iOrderRepository.findById(orderId).orElseThrow()
+
         validateIsUserOrder(userId, order.user.id!!)
+
         return order.toDetailResponse()
     }
 
@@ -63,7 +68,9 @@ class OrderService(
     @Transactional
     fun cancelOrder(userId: Long, orderId: Long) {
         val order = iOrderRepository.findById(orderId).orElseThrow()
+
         validateIsUserOrder(userId, order.user.id!!)
+
         if (order.status != OrderStatus.PLACED) {
             throw IllegalStateException("Your order cannot be canceled")
         }
@@ -72,6 +79,7 @@ class OrderService(
             it.product.stock += it.quantity
         }
     }
+
 
     fun getOrderDetailsAdmin(orderId: Long): OrderDetailsResponse {
         val order = iOrderRepository.findById(orderId).orElseThrow()
@@ -92,6 +100,7 @@ class OrderService(
     }
 
     private fun calculateTotalPriceFromProducts(
+
         productMap: Map<Long?, Product>,
         orderRequests: List<OrderRequest>
     ): List<Long> {
@@ -104,6 +113,7 @@ class OrderService(
     }
 
     private fun checkOrderStock(productMap: Map<Long?, Product>, orderRequests: List<OrderRequest>) {
+
         orderRequests.forEach {
             val product = productMap[it.productId]!!
             if (it.quantity > product.stock) {

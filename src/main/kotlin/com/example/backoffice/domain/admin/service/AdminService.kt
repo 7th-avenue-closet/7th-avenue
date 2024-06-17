@@ -10,12 +10,12 @@ import com.example.backoffice.domain.product.review.dto.toResponse
 import com.example.backoffice.domain.product.review.repository.ReviewRepository
 import com.example.backoffice.domain.user.dto.LoginRequest
 import com.example.backoffice.domain.user.dto.LoginResponse
+import com.example.backoffice.domain.user.repository.UserRepository
 import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtHelper
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.ZonedDateTime
 
 @Service
 class AdminService(
@@ -23,6 +23,7 @@ class AdminService(
     private val passwordEncoder: PasswordEncoder,
     private val jwtHelper: JwtHelper,
     private val reviewRepository: ReviewRepository,
+    private val userRepository: UserRepository,
 ) {
     fun createAdmin(request: AdminSignUpRequest): AdminSignUpResponse {
         val (accountId, password) = request
@@ -42,13 +43,12 @@ class AdminService(
         return LoginResponse(accessToken = jwtHelper.generateToken(admin.id!!, MemberRole.ADMIN))
     }
 
-    fun getReviews(userId: Long?): List<ReviewResponse> {
-        return reviewRepository.getReviews(userId).map { it.toResponse() }
-    }
-
     @Transactional
-    fun deleteReviews(reviewIds: List<Long>) {
-        val reviews = reviewRepository.findByIdInAndDeletedAtIsNull(reviewIds)
-        reviews.forEach { it.softDelete() }
+    fun suspendUser(userId: Long) {
+        val user =
+            userRepository.findByIdAndDeletedAtIsNull(userId) ?: throw ModelNotFoundException("User", userId)
+
+        user.softDelete()
     }
 }
+
