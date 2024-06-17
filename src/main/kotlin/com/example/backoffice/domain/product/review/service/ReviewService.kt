@@ -4,6 +4,8 @@ import com.example.backoffice.common.exception.AccessDeniedException
 import com.example.backoffice.common.exception.ModelNotFoundException
 import com.example.backoffice.domain.product.repository.ProductRepository
 import com.example.backoffice.domain.product.review.dto.ReviewRequest
+import com.example.backoffice.domain.product.review.dto.ReviewResponse
+import com.example.backoffice.domain.product.review.dto.toResponse
 import com.example.backoffice.domain.product.review.model.Rating
 import com.example.backoffice.domain.product.review.model.Review
 import com.example.backoffice.domain.product.review.repository.ReviewRepository
@@ -66,5 +68,15 @@ class ReviewService(
             "You do not have permission to delete."
         )
         review.softDelete()
+    }
+
+    fun getReviews(userId: Long?): List<ReviewResponse> {
+        return reviewRepository.getReviews(userId).map { it.toResponse() }
+    }
+
+    @Transactional
+    fun deleteReviewsByAdmin(reviewIds: List<Long>) {
+        val reviews = reviewRepository.findByIdInAndDeletedAtIsNull(reviewIds)
+        reviews.forEach { it.softDelete() }
     }
 }

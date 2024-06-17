@@ -22,7 +22,6 @@ class AdminService(
     private val adminRepository: AdminRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtHelper: JwtHelper,
-    private val reviewRepository: ReviewRepository,
     private val userRepository: UserRepository,
 ) {
     fun createAdmin(request: AdminSignUpRequest): AdminSignUpResponse {
@@ -41,16 +40,6 @@ class AdminService(
             ?: throw IllegalArgumentException("Invalid Credential.")
 
         return LoginResponse(accessToken = jwtHelper.generateToken(admin.id!!, MemberRole.ADMIN))
-    }
-
-    fun getReviews(userId: Long?): List<ReviewResponse> {
-        return reviewRepository.getReviews(userId).map { it.toResponse() }
-    }
-
-    @Transactional
-    fun deleteReviews(reviewIds: List<Long>) {
-        val reviews = reviewRepository.findByIdInAndDeletedAtIsNull(reviewIds)
-        reviews.forEach { it.softDelete() }
     }
 
     @Transactional
