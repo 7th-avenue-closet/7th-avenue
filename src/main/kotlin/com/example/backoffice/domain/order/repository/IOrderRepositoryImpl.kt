@@ -7,6 +7,7 @@ import com.example.backoffice.domain.product.repository.ProductRepository
 import com.example.backoffice.domain.user.model.User
 import com.example.backoffice.domain.user.repository.UserRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class IOrderRepositoryImpl(
@@ -16,6 +17,10 @@ class IOrderRepositoryImpl(
 
     override fun save(order: Order) {
         orderRepository.save(order)
+    }
+
+    override fun findById(orderId: Long): Optional<Order> {
+        return orderRepository.findById(orderId)
     }
 
 }

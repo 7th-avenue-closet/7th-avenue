@@ -1,6 +1,8 @@
 package com.example.backoffice.domain.order.service
 
 import com.example.backoffice.common.exception.ModelNotFoundException
+import com.example.backoffice.domain.order.dto.OrderDetailsResponse
+import com.example.backoffice.domain.order.dto.OrderProductResponse
 import com.example.backoffice.domain.order.dto.OrderRequest
 import com.example.backoffice.domain.order.model.Order
 import com.example.backoffice.domain.order.model.OrderProduct
@@ -21,7 +23,7 @@ class OrderService(
     private val productRepository: ProductRepository
 ) {
     @Transactional
-    fun placeOrder(userId: Long, orderRequests: List<OrderRequest>) {
+    fun placeOrder(userId: Long, orderRequests: List<OrderRequest>): Long? {
         val ids = orderRequests.map {
             it.productId
         }
@@ -45,10 +47,33 @@ class OrderService(
             val product = productMap[it.productId]!!
             product.stock -= it.quantity
         }
+        return order.id
+    }
+
+    fun getOrderDetails(userId: Long, orderId: Long): OrderDetailsResponse {
+        val order = iOrderRepository.findById(orderId).orElseThrow()
+        val orderProducts = mutableListOf<OrderProductResponse>()
+        order.orderProducts.forEach() {
+            orderProducts.add(
+                OrderProductResponse(
+                    it.product.id!!,
+                    it.quantity,
+                    it.price
+                )
+            )
+        }
+        return OrderDetailsResponse(
+            id = order.id!!,
+            totalPrice = order.totalPrice,
+            createdAt = order.createdAt,
+            userId = order.user.id!!,
+            status = order.status,
+            orderProducts = orderProducts
+        )
     }
 
 
-    fun calculateTotalPriceFromProducts(
+    private fun calculateTotalPriceFromProducts(
         productMap: Map<Long?, Product>,
         orderRequests: List<OrderRequest>
     ): List<Long> {
@@ -60,7 +85,7 @@ class OrderService(
         return totalPrice
     }
 
-    fun checkOrderStock(productMap: Map<Long?, Product>, orderRequests: List<OrderRequest>) {
+    private fun checkOrderStock(productMap: Map<Long?, Product>, orderRequests: List<OrderRequest>) {
         orderRequests.forEach {
             val product = productMap[it.productId]!!
             if (it.quantity > product.stock) {
@@ -68,5 +93,6 @@ class OrderService(
             }
         }
     }
+
 
 }
