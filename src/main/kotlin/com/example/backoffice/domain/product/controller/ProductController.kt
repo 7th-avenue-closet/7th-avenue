@@ -3,19 +3,14 @@ package com.example.backoffice.domain.product.controller
 import com.example.backoffice.domain.product.dto.*
 import com.example.backoffice.domain.product.model.Category
 import com.example.backoffice.domain.product.service.ProductService
-import com.example.backoffice.infra.security.CustomPreAuthorize
-import com.example.backoffice.infra.security.MemberPrincipal
-import com.example.backoffice.infra.security.MemberRole
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/products")
 class ProductController(
     private val productService: ProductService,
-    private val preAuthorize: CustomPreAuthorize,
 ) {
 
     @GetMapping
