@@ -14,11 +14,11 @@ class ProductService(
 ) {
     fun getProducts(
         pageSize: Long,
-        sorted: String?,
-        cursor: Long,
+        sorted: String,
+        cursor: Any?,
         category: Category?,
         name: String?,
-        onDiscount: Boolean?
+        onDiscount: Boolean?,
     ): List<ProductResponseDto> {
         return productRepository.findByPageableAndDeleted(pageSize, sorted, cursor, category, name, onDiscount)
             .map { it.toResponse() }

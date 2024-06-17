@@ -22,13 +22,19 @@ class ProductController(
     fun getProducts(
         @RequestParam pageSize: Long = 10,
         @RequestParam sorted: String = "id.desc",
-        @RequestParam cursor: Long,
+        @RequestParam cursor: String?,
         @RequestParam category: Category?,
         @RequestParam name: String?,
-        @RequestParam onDiscount: Boolean?
+        @RequestParam onDiscount: Boolean?,
     ): ResponseEntity<List<ProductResponseDto>> {
+        val cursorValue: Any? = when (sorted.split(".")[0]) {
+            "price", "id" -> cursor?.toLongOrNull()
+            "name" -> cursor
+            else -> throw IllegalArgumentException("Invalid sorted field")
+        }
+        
         return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.getProducts(pageSize, sorted, cursor, category, name, onDiscount))
+            .body(productService.getProducts(pageSize, sorted, cursorValue, category, name, onDiscount))
     }
 
     @GetMapping("/{productId}")

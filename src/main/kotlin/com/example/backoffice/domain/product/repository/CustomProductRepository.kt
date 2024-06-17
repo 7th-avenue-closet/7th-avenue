@@ -6,10 +6,10 @@ import com.example.backoffice.domain.product.model.Product
 interface CustomProductRepository {
     fun findByPageableAndDeleted(
         pageSize: Long,
-        sorted: String?,
-        cursor: Long,
+        sorted: String,
+        cursor: Any?,
         category: Category?,
         name: String?,
-        onDiscount: Boolean?
+        onDiscount: Boolean?,
     ): List<Product>
 }
