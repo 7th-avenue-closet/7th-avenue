@@ -45,28 +45,4 @@ class ProductController(
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(productId, cursor))
     }
 
-    @PostMapping
-    fun createProduct(
-        @AuthenticationPrincipal principal: MemberPrincipal,
-        @RequestBody request: CreateProductRequestDto,
-    ): ResponseEntity<IdResponseDto> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(request))
-    }
-
-    @PutMapping("/{productId}")
-    fun updateProduct(
-        @AuthenticationPrincipal principal: MemberPrincipal,
-        @PathVariable("productId") productId: Long,
-        @RequestBody request: UpdateProductRequestDto,
-    ): ResponseEntity<IdResponseDto> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        ResponseEntity.status(HttpStatus.CREATED).body(productService.updateProduct(productId, request))
-    }
-
-    @DeleteMapping("/{productId}")
-    fun deletePost(
-        @AuthenticationPrincipal principal: MemberPrincipal,
-        @PathVariable("productId") productId: Long,
-    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        ResponseEntity.status(HttpStatus.OK).body(productService.deleteProduct(productId))
-    }
 }
