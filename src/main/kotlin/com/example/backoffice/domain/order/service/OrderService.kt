@@ -49,6 +49,7 @@ class OrderService(
 
     fun getOrderDetails(userId: Long, orderId: Long): OrderDetailsResponse {
         val order = iOrderRepository.findById(orderId).orElseThrow()
+        validateIsUserOrder(userId, order.user.id!!)
         return order.toDetailResponse()
     }
 
@@ -62,9 +63,7 @@ class OrderService(
     @Transactional
     fun cancelOrder(userId: Long, orderId: Long) {
         val order = iOrderRepository.findById(orderId).orElseThrow()
-        if (userId != order.user.id) {
-            throw IllegalArgumentException("Invalid cancellation request")
-        }
+        validateIsUserOrder(userId, order.user.id!!)
         if (order.status != OrderStatus.PLACED) {
             throw IllegalStateException("Your order cannot be canceled")
         }
@@ -73,7 +72,25 @@ class OrderService(
             it.product.stock += it.quantity
         }
     }
-    
+
+    fun getOrderDetailsAdmin(orderId: Long): OrderDetailsResponse {
+        val order = iOrderRepository.findById(orderId).orElseThrow()
+        return order.toDetailResponse()
+    }
+
+    fun getOrdersAdmin(): OrdersResponse {
+        val orders = iOrderRepository.findAll()
+        return OrdersResponse(orders.map {
+            it.toOverviewResponse()
+        })
+    }
+
+    @Transactional
+    fun updateOrderStatus(orderId: Long, orderStatusRequest: OrderStatusRequest) {
+        val order = iOrderRepository.findById(orderId).orElseThrow()
+        order.status = OrderStatus.fromString(orderStatusRequest.status)
+    }
+
     private fun calculateTotalPriceFromProducts(
         productMap: Map<Long?, Product>,
         orderRequests: List<OrderRequest>
@@ -92,6 +109,12 @@ class OrderService(
             if (it.quantity > product.stock) {
                 throw IllegalArgumentException("unable to order more than stock")
             }
+        }
+    }
+
+    private fun validateIsUserOrder(userId: Long, orderUserId: Long) {
+        if (userId != orderUserId) {
+            throw IllegalArgumentException("Invalid cancellation request")
         }
     }
 

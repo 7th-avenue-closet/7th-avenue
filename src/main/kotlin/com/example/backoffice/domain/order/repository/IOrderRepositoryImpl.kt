@@ -27,4 +27,8 @@ class IOrderRepositoryImpl(
     override fun findAllByUserId(userId: Long): List<Order> {
         return orderRepository.findAllByUserId(userId)
     }
+
+    override fun findAll(): List<Order> {
+        return orderRepository.findAll()
+    }
 }
