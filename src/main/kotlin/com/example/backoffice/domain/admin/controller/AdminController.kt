@@ -3,7 +3,6 @@ package com.example.backoffice.domain.admin.controller
 import com.example.backoffice.domain.admin.dto.AdminSignUpRequest
 import com.example.backoffice.domain.admin.dto.AdminSignUpResponse
 import com.example.backoffice.domain.admin.service.AdminService
-import com.example.backoffice.domain.product.review.dto.ReviewResponse
 import com.example.backoffice.domain.user.dto.LoginRequest
 import com.example.backoffice.domain.user.dto.LoginResponse
 import com.example.backoffice.infra.security.CustomPreAuthorize
@@ -31,20 +30,12 @@ class AdminController(
         return ResponseEntity.status(HttpStatus.CREATED).body(adminService.login(loginRequest))
     }
 
-    @GetMapping("/reviews")
-    fun getReviews(
+    @DeleteMapping("/users/{userId}")
+    fun suspendUser(
         @AuthenticationPrincipal principal: MemberPrincipal,
-        @RequestParam userId: Long?
-    ): ResponseEntity<List<ReviewResponse>> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        ResponseEntity.status(HttpStatus.OK).body(adminService.getReviews(userId))
-    }
-
-    @DeleteMapping("/reviews")
-    fun deleteReviews(
-        @AuthenticationPrincipal principal: MemberPrincipal,
-        @RequestBody reviewIds: List<Long>
+        @PathVariable userId: Long
     ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
-        adminService.deleteReviews(reviewIds)
+        adminService.suspendUser(userId)
         ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
