@@ -33,9 +33,9 @@ class UserService(
             password = encodedPassword,
             imageUrl = imageUrl
         )
-
-        passwordHistoryService.updatePasswordHistory(user)
-        return userRepository.save(user).run { SignUpResponse(userId = id!!) }
+        return userRepository.save(user)
+            .also { passwordHistoryService.updatePasswordHistory(it) }
+            .run { SignUpResponse(userId = id!!) }
     }
 
     fun login(request: LoginRequest): LoginResponse {

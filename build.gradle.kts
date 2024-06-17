@@ -23,8 +23,6 @@ repositories {
 val kotestVersion = "5.7.2"
 val mockkVersion = "1.13.9"
 val queryDslVersion = "5.0.0"
-val kotestVersion = "5.5.5"
-val mockkVersion = "1.13.8"
 
 
 dependencies {
