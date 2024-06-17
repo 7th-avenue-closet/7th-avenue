@@ -19,7 +19,6 @@ import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtHelper
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
@@ -41,9 +40,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.util.LinkedMultiValueMap
-import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 
 @SpringBootTest
@@ -65,10 +62,6 @@ class AdminControllerTest @Autowired constructor(
 
     val objectMapper = jacksonObjectMapper().apply {
         registerModule(JavaTimeModule().apply {
-            addSerializer(
-                ZonedDateTime::class.java,
-                ZonedDateTimeSerializer(DateTimeFormatter.ISO_ZONED_DATE_TIME.withZone(ZoneId.of("Asia/Seoul")))
-            )
             addDeserializer(
                 ZonedDateTime::class.java,
                 ZonedDateTimeDeserializer()
