@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
 ) {
     fun getProducts(
         pageSize: Long,
@@ -27,7 +27,7 @@ class ProductService(
             .map { it.toResponse() }
     }
 
-    fun getProductById(productId: Long, cursor: Long): ProductDetailResponseDto {
+    fun getProductById(productId: Long, cursor: Long?): ProductDetailResponseDto {
         val product = productRepository.findByIdAndDeletedAtIsNull(productId) ?: throw ModelNotFoundException(
             "Product",
             productId

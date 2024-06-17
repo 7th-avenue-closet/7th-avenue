@@ -23,11 +23,11 @@ class ReviewRepositoryImpl : CustomReviewRepository, QueryDslSupport() {
         return getReviewQuery.fetch()
     }
 
-    override fun getReviews(cursor: Long, productId: Long): List<Review> {
+    override fun getReviews(cursor: Long?, productId: Long): List<Review> {
         val builder = BooleanBuilder()
         builder.and(review.deletedAt.isNull)
         builder.and(review.product.id.eq(productId))
-        builder.and(review.id.lt(cursor))
+        cursor?.let { builder.and(review.id.lt(it)) }
 
         return queryFactory.selectFrom(review)
             .where(builder)
