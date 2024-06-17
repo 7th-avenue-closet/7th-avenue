@@ -48,10 +48,10 @@ class UserService(
 
     @Transactional
     fun updatePassword(userId: Long, request: UpdatePasswordRequest) {
-        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+        val user = userRepository.findByIdAndDeletedAtIsNull(userId) ?: throw ModelNotFoundException("User", userId)
         val (currentPassword, newPassword) = request
 
-        if (passwordEncoder.matches(currentPassword, user.password) == false) {
+        if (!passwordEncoder.matches(currentPassword, user.password)) {
             throw IllegalArgumentException("Invalid Credential.")
         }
 
@@ -63,8 +63,9 @@ class UserService(
     }
 
     private fun checkPasswordRule(password: String) {
-        if (password.matches("^[a-zA-Z0-9!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]{8,15}\$".toRegex()) == false) {
+        if (!password.matches("^[a-zA-Z0-9!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]{8,15}\$".toRegex())) {
             throw IllegalArgumentException("Invalid Password.")
         }
     }
 }
+

@@ -6,6 +6,7 @@ import com.example.backoffice.domain.admin.service.AdminService
 import com.example.backoffice.domain.product.review.dto.ReviewResponse
 import com.example.backoffice.domain.user.dto.LoginRequest
 import com.example.backoffice.domain.user.dto.LoginResponse
+import com.example.backoffice.domain.user.service.UserService
 import com.example.backoffice.infra.security.CustomPreAuthorize
 import com.example.backoffice.infra.security.MemberPrincipal
 import com.example.backoffice.infra.security.MemberRole
@@ -45,6 +46,15 @@ class AdminController(
         @RequestBody reviewIds: List<Long>
     ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
         adminService.deleteReviews(reviewIds)
+        ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
+
+    @DeleteMapping("/users/{userId}")
+    fun deleteUser(
+        @AuthenticationPrincipal principal: MemberPrincipal,
+        @PathVariable userId: Long
+    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.ADMIN)) {
+        adminService.deleteUser(userId)
         ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
