@@ -62,6 +62,13 @@ class UserService(
         passwordHistoryService.updatePasswordHistory(user)
     }
 
+    @Transactional
+    fun updateProfile(userId: Long, request: UpdateProfileRequest) {
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+
+        user.updateProfile(request.name, request.imageUrl)
+    }
+
     private fun checkPasswordRule(password: String) {
         if (!password.matches("^[a-zA-Z0-9!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]{8,15}\$".toRegex())) {
             throw IllegalArgumentException("Invalid Password.")

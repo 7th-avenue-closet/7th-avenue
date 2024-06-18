@@ -8,10 +8,7 @@ import com.example.backoffice.infra.security.MemberRole
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
@@ -32,6 +29,15 @@ class UserController(private val userService: UserService, private val preAuthor
         updatePasswordRequest: UpdatePasswordRequest,
     ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
         userService.updatePassword(principal.id, updatePasswordRequest)
+        ResponseEntity.status(HttpStatus.OK).build()
+    }
+
+    @PutMapping("/users/{userId}")
+    fun updateProfile(
+        @AuthenticationPrincipal principal: MemberPrincipal,
+        updateProfileRequest: UpdateProfileRequest,
+    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
+        userService.updateProfile(principal.id, updateProfileRequest)
         ResponseEntity.status(HttpStatus.OK).build()
     }
 }
