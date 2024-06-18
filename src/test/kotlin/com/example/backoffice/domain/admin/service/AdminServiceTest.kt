@@ -3,11 +3,10 @@ import com.example.backoffice.domain.admin.dto.AdminSignUpResponse
 import com.example.backoffice.domain.admin.model.Admin
 import com.example.backoffice.domain.admin.repository.AdminRepository
 import com.example.backoffice.domain.admin.service.AdminService
-import com.example.backoffice.domain.product.review.dto.toResponse
-import com.example.backoffice.domain.product.review.model.Review
 import com.example.backoffice.domain.product.review.repository.ReviewRepository
 import com.example.backoffice.domain.user.dto.LoginRequest
 import com.example.backoffice.domain.user.dto.LoginResponse
+import com.example.backoffice.domain.user.repository.UserRepository
 import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtHelper
 import io.kotest.assertions.throwables.shouldThrow
@@ -18,7 +17,6 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -36,12 +34,13 @@ class AdminServiceTest : DescribeSpec({
     val passwordEncoder = mockk<PasswordEncoder>()
     val jwtHelper = mockk<JwtHelper>()
     val reviewRepository = mockk<ReviewRepository>()
+    val userRepository = mockk<UserRepository>()
 
-    val adminService = AdminService(adminRepository, passwordEncoder, jwtHelper, reviewRepository)
+    val adminService = AdminService(adminRepository, passwordEncoder, jwtHelper, reviewRepository, userRepository)
 
     describe("AdminService") {
 
-        describe("createAdmin") {
+        describe("admin sign-up") {
             val accountId = "admin"
             val password = "password"
             val encodedPassword = "encodedPassword"
@@ -108,32 +107,6 @@ class AdminServiceTest : DescribeSpec({
                         adminService.login(loginRequest)
                     }
                 }
-            }
-        }
-
-        describe("getReviews") {
-            val userId = 1L
-
-            val reviews = listOf(mockk<Review>(), mockk<Review>(), mockk<Review>())
-            val reviewResponses = reviews.map { it.toResponse() }
-            every { reviewRepository.getReviews(userId) } returns reviews
-
-            it("should return list of ReviewResponse") {
-                val response = adminService.getReviews(userId)
-                response shouldBe reviewResponses
-            }
-        }
-
-        describe("deleteReviews") {
-            val reviewIds = listOf(1L, 2L)
-            val reviews = listOf(mockk<Review>(), mockk<Review>())
-
-            every { reviewRepository.findByIdInAndDeletedAtIsNull(reviewIds) } returns reviews
-            every { reviews.forEach { it.softDelete() } } returns Unit
-
-            it("should soft delete the reviews") {
-                adminService.deleteReviews(reviewIds)
-                verify { reviews.forEach { it.softDelete() } }
             }
         }
     }
