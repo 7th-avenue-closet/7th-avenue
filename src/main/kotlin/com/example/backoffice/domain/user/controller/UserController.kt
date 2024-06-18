@@ -39,4 +39,13 @@ class UserController(private val userService: UserService, private val preAuthor
         userService.updatePassword(principal.id, updatePasswordRequest)
         ResponseEntity.status(HttpStatus.OK).build()
     }
+
+    @PutMapping("/users/{userId}")
+    fun updateProfile(
+        @AuthenticationPrincipal principal: MemberPrincipal,
+        updateProfileRequest: UpdateProfileRequest,
+    ): ResponseEntity<Unit> = preAuthorize.hasAnyRole(principal, setOf(MemberRole.USER)) {
+        userService.updateProfile(principal.id, updateProfileRequest)
+        ResponseEntity.status(HttpStatus.OK).build()
+    }
 }

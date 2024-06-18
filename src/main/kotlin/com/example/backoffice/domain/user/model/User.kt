@@ -25,6 +25,12 @@ class User(
         this.password = newPassword
     }
 
+    fun updateProfile(newName: String, newImageUrl: String) {
+        this.name = newName
+        this.imageUrl = newImageUrl
+    }
+
+
     companion object {
         private fun checkAccountId(newAccountId: String) {
             if (newAccountId.matches("^[a-z0-9]{4,10}$".toRegex()) == false) {
@@ -44,6 +50,7 @@ class User(
             )
         }
     }
+
     fun softDelete() {
         this.deletedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
     }

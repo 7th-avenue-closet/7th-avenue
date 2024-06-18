@@ -7,6 +7,7 @@ import com.example.backoffice.domain.user.repository.UserRepository
 import com.example.backoffice.infra.redis.RedisTokenRepository
 import com.example.backoffice.infra.security.MemberRole
 import com.example.backoffice.infra.security.jwt.JwtHelper
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -61,6 +62,13 @@ class UserService(
 
         user.updatePassword(newPassword = passwordEncoder.encode(newPassword))
         passwordHistoryService.updatePasswordHistory(user)
+    }
+
+    @Transactional
+    fun updateProfile(userId: Long, request: UpdateProfileRequest) {
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+
+        user.updateProfile(request.name, request.imageUrl)
     }
 
     fun logout(token: String) {
