@@ -34,8 +34,8 @@
 
 #### 3. USER, ADMIN
 * 프로젝트 주제가 BackOffice인 만큼 Admin, User 부분을 각각 관리할 수 있도록 도메인 분리
-* ID는 최소 4자 이상, 10자 이하이며 알파벳 소문자(a~z), 숫자(0~9)로 구성
-* password는 최소 8자 이상, 15자 이하이며 알파벳 대소문자(a~z, A~Z), 숫자(0~9), 특수문자로 구성
+* ID는 최소 4자 이상, 10자 이하이며 알파벳 소문자(a-z), 숫자(0-9)로 구성
+* password는 최소 8자 이상, 15자 이하이며 알파벳 대소문자(a-z, A-Z), 숫자(0-9), 특수문자로 구성
 * 최근 3번 안에 사용한 비밀번호는 사용할 수 없도록 제한 설정 (PasswordHistoryService)
 
 
@@ -87,5 +87,4 @@ Swagger를 사용하여 API 문서를 조회할 수 있습니다. 브라우저�
 
 * **Language:** Kotlin 1.9.24
 * **IDE:** Intellij
-* **JDK:** 17.0.11
-* **SDK:** Eclipse Temurin 22.0.1
+* **JDK:** Temurin 17.0.11
